@@ -1,4 +1,6 @@
 const bot = require('bbot')
+const request = bot.request;
+const { driver, methodCache, api } = require('@rocket.chat/sdk')
 
 /**
  * `text` branch types simply respond when regex pattern is met.
@@ -7,8 +9,29 @@ const bot = require('bbot')
  *
  * Test with "Hello bots!"
 */
-bot.global.text(/(hi|hello) bots/, (b) => b.respond('Hello 👋'), {
-  id: 'hello-bots'
+bot.global.text(/(hi|hello) bots/, (b) => {
+  console.log('this is exec');
+  const resp = bot.adapters.message.driver.asyncCall('getStatistics')
+    .then(result => {
+      console.log('the result', result);
+      b.reply(JSON.stringify(result));
+    })
+  // api.success(function(resl) {
+  //   debugger
+  // })
+  // api.get('http://localhost:3000/api/v1/statistics')
+  //   .then(result => {
+  //     console.log('the result', result);
+  //   })
+  //   .catch(err => {
+  //     console.log('the error is', err);
+  //   })
+  // debugger;
+  // bot.adapters.message.api.success(function(result) {
+  //   debugger;
+  // })
+}, {
+    id: 'hello-bots'
 })
 
 /**

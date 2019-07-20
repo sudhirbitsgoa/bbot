@@ -12,6 +12,13 @@
       "env": {
         "NODE_ENV": "development",
         "BOT_LOG_LEVEL": "debug",
+        "ROCKETCHAT_URL":"http://0.0.0.0:3000",
+        "ROCKETCHAT_AUTH":"password",
+        "ROCKETCHAT_USER":"bbot",
+        "ROCKETCHAT_PASSWORD":"password",
+        "LISTEN_ON_ALL_PUBLIC":"true",
+        "ROCKETCHAT_ROOM":"",
+        "RESPOND_TO_DM":"true",
       },
       "runtimeExecutable": "node",
       "program": "${workspaceFolder}/index.js",
