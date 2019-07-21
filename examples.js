@@ -9,27 +9,12 @@ const { driver, methodCache, api } = require('@rocket.chat/sdk')
  *
  * Test with "Hello bots!"
 */
-bot.global.text(/(hi|hello) bots/, (b) => {
+bot.global.text(/(hi|hello) bot get stats/, (b) => {
   console.log('this is exec');
   const resp = bot.adapters.message.driver.asyncCall('getStatistics')
     .then(result => {
-      console.log('the result', result);
       b.reply(JSON.stringify(result));
-    })
-  // api.success(function(resl) {
-  //   debugger
-  // })
-  // api.get('http://localhost:3000/api/v1/statistics')
-  //   .then(result => {
-  //     console.log('the result', result);
-  //   })
-  //   .catch(err => {
-  //     console.log('the error is', err);
-  //   })
-  // debugger;
-  // bot.adapters.message.api.success(function(result) {
-  //   debugger;
-  // })
+    });
 }, {
     id: 'hello-bots'
 })
