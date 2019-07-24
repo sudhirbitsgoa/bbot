@@ -10,8 +10,7 @@ const { driver, methodCache, api } = require('@rocket.chat/sdk')
  * Test with "Hello bots!"
 */
 bot.global.text(/(hi|hello) bot get stats/, (b) => {
-  console.log('this is exec');
-  const resp = bot.adapters.message.driver.asyncCall('getStatistics')
+  bot.adapters.message.driver.asyncCall('getStatistics')
     .then(result => {
       b.reply(JSON.stringify(result));
     });
