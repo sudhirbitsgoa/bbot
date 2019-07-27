@@ -3,7 +3,7 @@ const scene = require('./scene')
 const { paths, patterns } = require('./content')
 
 scene.setup(bot)
-bot.global.enter(paths.stats)
+bot.global.enter(paths.welcome)
 bot.global.text(patterns.welcome, paths.welcome)
 bot.global.text(patterns.start, paths.start)
 

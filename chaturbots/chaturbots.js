@@ -1,1 +1,2 @@
-require('./statsbot');
+// require('./statsbot');
+require('./account_setup');
