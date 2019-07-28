@@ -1,15 +1,16 @@
 const scene = require('./scene')
 const credentials = require('./credentials')
 const admin = require('./admin')
+const bot = require('bbot')
 
 // Shortcut to path handlers for user ID
 const path = (b) => scene.path(b.message.user.id)
 
 // Keep patterns separated for cleaner conversation logic
 const patterns = {
-  welcome: /\b(hi|hello|hey)\b$/i,
+  stats: /\b(hi|hello|hey)\b$/i,
   email: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
-  frameworks: /\b(totalUsers|onlineUsers|offlineUsers|totalChannelMessages|totalPrivateGroupMessages|none)\b$/i, 
+  frameworks: /\b(totalUsers|onlineUsers|offlineUsers|totalChannelMessages|totalPrivateGroupMessages|none)\b$/i,
   username: /(\w*)$/i,
   password: /(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
   set: /set$/i,
@@ -48,7 +49,7 @@ const paths = {
       `Please try again, or reply \`quit\` if you want to try later.`
     ))
   },
-  statsOption: () => {
+  statsOption: async (b) => {
     await b.respond(
       "Do you need `totalUsers`, `onlineUsers`, `offlineUsers`, `totalChannelMessages`, `totalPrivateGroupMessages`, or `none`?"
     )
@@ -57,56 +58,53 @@ const paths = {
     path(b).text(patterns.exit, paths.exit)
     path(b).catchAll((b) => {
       b.respond(
-      `Sorry, I don't know how to setup for framework named ${b.match}.`, 
-      `Please try again, or reply \`quit\` if you want to try later.`)
+        `Sorry, I don't know how to get stats for ${b.match}.`,
+        `Please try again, or reply \`quit\` if you want to try later.`)
     })
-   
-  },
-  email: async(b) => {
-    const address = b.match[0]
-    b.bot.logger.info(`[faldo] creating new credentials for email ${address}`)
-    credentials(b.message.user.id).setEmail(address)    
-    await b.respond(
-      "Perfect. Now, which bot framework you are using?  Do you use `bbot`, `botpress`, `botkit`, `hubot`, `rasa`, or `none`?"
-    )
-    path(b).reset()
-    path(b).text(patterns.frameworks, paths.framework)
-    path(b).text(patterns.exit, paths.exit)
-    path(b).catchAll((b) => {
-      b.respond(
-      `Sorry, I don't know how to setup for framework named ${b.match}.`, 
-      `Please try again, or reply \`quit\` if you want to try later.`)
-    })
-    
+
   },
   framework: async (b) => {
     // const framework = b.match[0]
     const framework = 'bbot'
     b.bot.logger.info(`[faldo] storing framework information  ${framework}`)
-    credentials(b.message.user.id).setFramework(framework)
-    
+    // credentials(b.message.user.id).setFramework(framework)
     const matched = b.match[0]
     if (matched != 'bbot') {
-    await b.respond(
-      'Alright, it seems you want ${matched}.',
-      'I really recommend bBot from Amazebot though :slight_smile:',
-      'And that is all that I can do at this time :stuck_out_tongue:',
-       'I will go ahead and setup bbot for you')
-      }
-  
-    await b.respond(
-      `Thanks, I'll send you the credentials when we're done. :thumbsup:`,
-      `Would you like to set other attributes, or skip to use generated?`,
-      `Reply \`set\` or \`skip\``
-    )
+      await b.respond(
+        `Alright, it seems you want ${matched} :slight_smile:.`)
+    }
+    const statics = await bot.adapters.message.driver.asyncCall('getStatistics');
+    let resp = '';
+    switch (matched) {
+      case 'totalUsers':
+        resp = statics.totalUsers;      
+        break;
+      case 'onlineUsers':
+        resp = statics.onlineUsers;      
+        break;
+      case 'offlineUsers':
+        resp = statics.offlineUsers;      
+        break;
+      case 'totalChannelMessages':
+        resp = statics.totalChannelMessages;      
+        break;
+      case 'totalPrivateGroupMessages':
+        resp = statics.totalPrivateGroupMessages;      
+        break;
+      default:
+        resp = statics;
+        break;
+    }
+    await b.respond(JSON.stringify(resp));
     path(b).reset()
     path(b).text(patterns.set, paths.set)
-    path(b).text(patterns.skip, paths.skip)
+    path(b).text(patterns.frameworks, paths.framework)
+    // path(b).text(patterns.skip, paths.skip)
     path(b).text(patterns.exit, paths.exit)
     path(b).catchAll((b) => b.respond(
       `Sorry that's not an option right now.`,
-      `Reply with either \`set\` to define attributes or \`skip\` to generate.`
-    ))
+      `Reply with either \`totalUsers\`, \`onlineUsers\`, \`offlineUsers\`, \`totalChannelMessages\`, \`totalPrivateGroupMessages\``
+    ));
   },
   set: async (b) => {
     await b.respond(
@@ -158,9 +156,9 @@ const paths = {
       `You'll log in with username **${user.username}** and password **${user.password}**`,
       `Your bot will need the following environment settings:`,
       `\`\`\`
-ROCKETCHAT_USERNAME="${bot.username}"
-ROCKETCHAT_PASSWORD="${bot.password}"
-ROCKETCHAT_ROOM="${room.name}"\`\`\``,
+      ROCKETCHAT_USERNAME="${bot.username}"
+      ROCKETCHAT_PASSWORD="${bot.password}"
+      ROCKETCHAT_ROOM="${room.name}"\`\`\``,
       `Your will code your bot using the ${credential.bot.framework} framework.`,
       `Reply \`confirm\` to go ahead and I'll email you the details.`
     )
@@ -182,11 +180,11 @@ ROCKETCHAT_ROOM="${room.name}"\`\`\``,
       const botsplaygroundurl = 'https://bots.rocket.chat'
       const cred = credentials(b.message.user.id)
       const envvars = {
-        'ROCKETCHAT_URL' : botsplaygroundurl,
-        'ROCKETCHAT_USER' : cred.bot.username,
-        'ROCKETCHAT_PASSWORD' : cred.bot.password,
-        'ROCKETCHAT_ROOM' : cred.room.name,
-        'ROCKETCHAT_USE_SSL' : true
+        'ROCKETCHAT_URL': botsplaygroundurl,
+        'ROCKETCHAT_USER': cred.bot.username,
+        'ROCKETCHAT_PASSWORD': cred.bot.password,
+        'ROCKETCHAT_ROOM': cred.room.name,
+        'ROCKETCHAT_USE_SSL': true
       }
       const remixurl = admin.getRemix(cred.bot.framework, envvars)
       b.bot.logger.info(remixurl)
