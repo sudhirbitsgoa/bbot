@@ -11,7 +11,7 @@
       "cwd": "${workspaceFolder}",
       "env": {
         "NODE_ENV": "development",
-        "BOT_LOG_LEVEL": "debug",
+        "BOT_LOG_LEVEL": "info",
         "ROCKETCHAT_URL":"http://0.0.0.0:3000",
         "ROCKETCHAT_AUTH":"password",
         "ROCKETCHAT_USER":"bbot",

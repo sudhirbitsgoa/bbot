@@ -22,6 +22,7 @@
     "generate-password": "^1.4.2",
     "glitchmagic": "0.0.1",
     "random-words": "^1.1.0",
+    "request": "^2.88.0",
     "turbproxy": "0.0.6"
   },
   "devDependencies": {

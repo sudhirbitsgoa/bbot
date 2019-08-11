@@ -71,7 +71,7 @@ const paths = {
     const matched = b.match[0]
     if (matched != 'bbot') {
       await b.respond(
-        `Alright, it seems you want ${matched} :slight_smile:.`)
+        `Alright, it seems you wan't ${matched} :slight_smile:.`)
     }
     const statics = await bot.adapters.message.driver.asyncCall('getStatistics');
     let resp = '';
