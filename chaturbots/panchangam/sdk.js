@@ -12,7 +12,8 @@ var getResponse = (resource, data, callback) => {
 		{
 			url: url,
 			headers: {
-				"Authorization": auth
+				"Authorization": auth,
+				"Accept-language": 'te'
 			},
 			method: "POST",
 			form: data
