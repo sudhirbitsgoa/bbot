@@ -18,7 +18,7 @@ class Scene {
       const uId = b.message.user.id
       if (this.isEngaged(uId) && b.scope === 'global') {
         b.ignore()
-        bot.logger.debug(`[scene] entering ${b.message.user.name} into panchangam.`)
+        bot.logger.debug(`[scene] entering ${b.message.user.name} into scene.`)
         await bot.receive(b.message, this.path(uId))
         done()
       } else {

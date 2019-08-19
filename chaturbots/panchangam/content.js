@@ -16,7 +16,7 @@ function getUserParamInfo(b) {
 // Keep patterns separated for cleaner conversation logic
 const patterns = {
   stats: /\b(hi astro|hello astro|hey astro)\b$/i,
-  panchangamOptions: /\b(జాతకం|సంఖ్యా శాస్త్రం|గుణమేళనం|పైనవి కావు)\b$/i,
+  panchangamOptions: /\b(Horoscope|Numerology|Match Making|none)\b$/i,
   // ddmmyyyyhhmm: /\b(pattern)\b$/i,
   ddmmyyyy: /^(0?[1-9]|[12]\d|3[01])[\.\/\-](0?[1-9]|1[012])[\.\/\-]([12]\d)?(\d\d)$/i,
   hhmm: /([01]?[0-9]|2[0-3]):[0-5][0-9]$/i,
@@ -56,21 +56,21 @@ const paths = {
   },
   statsOption: async (b) => {
     await b.respond(
-      "`జాతకం`, `సంఖ్యా శాస్త్రం`, `గుణమేళనం`,  `పైనవి కావు` ?"
+      "`Horoscope`, `Numerology`, `Match Making`, or `none`?"
     )
     path(b).reset()
     path(b).text(patterns.panchangamOptions, paths.panchangamOffers)
     path(b).text(patterns.exit, paths.exit)
     path(b).catchAll((b) => {
       b.respond(
-        `క్షమించాలి, మీరు తెలిపిన ${b.match} నాకు తెలియదు.`,
-        `మరో సారి ప్రయత్నిచండి లేదా \`quit\` చేయండి.`)
+        `Sorry, I don't know how to get panchangam for ${b.match}.`,
+        `Please try again, or reply \`quit\` if you want to try later.`)
     })
 
   },
   panchangamOffers: async (b) => {
     // const framework = b.match[0]
-    const offers = 'జాతకం'
+    const offers = 'Horoscope'
     b.bot.logger.info(`[faldo] storing offers information  ${offers}`)
     // credentials(b.message.user.id).setFramework(framework)
     const matched = b.match[0]
@@ -79,13 +79,13 @@ const paths = {
     path(b).reset()
     // const statics = await bot.adapters.message.driver.asyncCall('getStatistics');
     switch (matched) {
-      case 'జాతకం':
+      case 'Horoscope':
         await b.respond(
-          `మీయొక్క పుట్టిన తేదీ ఈ విధంగా తెలియజేయండి. \`dd.mm.yyyy\``
+          `Please enter your birth date in this format \`dd.mm.yyyy\``
         );
         path(b).text(patterns.ddmmyyyy, paths.getTime);
         break;
-      case 'జాతకం':
+      case 'horoscope':
         await b.respond(
           `Please enter your birth date in this format \`dd.mm.yyyy\``
         );
@@ -117,34 +117,32 @@ const paths = {
       }
       debugger;
       b.respond(
-        `ఈ సేవ అందుబాటులో లేదు.`,
-        `\`జాతకం\`, \`సంఖ్యా శాస్త్రం\`, \`గుణమేళనం\`,`
+        `Sorry that's not an option right now.`,
+        `Reply with either \`Horoscope\`, \`Numerology\`, \`Match Making\``
       );
     });
   },
   getTime: async (b) => {
     await b.respond(
-      `మీ యెక్క పుట్టిన సమయం ఈ విధంగా తెలియజేయండి \`hh:mm\``
+      `Enter birth time as \`hh:mm\``
     );
     path(b).reset();
     path(b).text(patterns.hhmm, paths.horoscopeCall);
     path(b).text(patterns.exit, paths.exit);
     path(b).catchAll((b) => b.respond(
-      `ఈ సేవ అందుబాటులో లేదు.`
+      `Sorry not an option now.`
     ));
   },
   horoscopeCall: async (b) => {
     const params = getUserParamInfo(b);
     const matched = b.match[0];
     const time = params.ddmmyyyy;
+    debugger;
     let dob = time.split('.');
     let hhmm = matched.split(':');
     path(b).text(patterns.exit, paths.exit);
     try {
       panchgamAPI.call('astro_details', dob[0], dob[1], dob[2], hhmm[0], hhmm[1], 17.387140, 78.491684, 5.5, function(err, result) {
-        if(err) {
-          return b.respond(err);
-        }
         b.respond(result);
       });
     } catch (error) {
