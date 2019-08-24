@@ -1,7 +1,10 @@
+'use strict';
 const scene = require('./scene')
-const credentials = require('./credentials')
 const panchgamAPI = require('./sdk');
+const i18n_module = require('i18n-nodejs');
+const i18n = new i18n_module('tg', './../../locale.json');
 
+console.log(i18n.__('Welcome'));
 // Shortcut to path handlers for user ID
 const path = (b) => scene.path(b.message.user.id)
 
@@ -13,16 +16,27 @@ function getUserParamInfo(b) {
   return collection[b.message.user.id];
 }
 
-// Keep patterns separated for cleaner conversation logic
+// Keep patternsTel separated for cleaner conversation logic
 const patterns = {
-  stats: /\b(hi astro|hello astro|hey astro)\b$/i,
-  panchangamOptions: /\b(Horoscope|Numerology|Match Making|none)\b$/i,
+  start: /\b(hi astro|hello astro|hey astro)\b$/i,
+  panchangamOptions: new RegExp(`\b(${i18n.__('horoscope')}|${i18n.__('numerology')}|${i18n.__('matchMaking')})\b$`, 'i'),
   // ddmmyyyyhhmm: /\b(pattern)\b$/i,
   ddmmyyyy: /^(0?[1-9]|[12]\d|3[01])[\.\/\-](0?[1-9]|1[012])[\.\/\-]([12]\d)?(\d\d)$/i,
   hhmm: /([01]?[0-9]|2[0-3]):[0-5][0-9]$/i,
   skip: /skip$/i,
   start: /(start|new|begin)$/i,
   exit: /\b(quit|exit|cancel)\b$/i,
+}
+
+const patternsTel = {
+  start: /(నమస్కారం ఆస్ట్రో|హలో ఆస్ట్రో|హాయ్ ఆస్ట్రో|hi astro)$/i,
+  panchangamOptions: /(జాతకం|సంఖ్యా శాస్త్రం|గుణమేళనం|none)$/i,
+  // ddmmyyyyhhmm: /\b(pattern)\b$/i,
+  ddmmyyyy: /^(0?[1-9]|[12]\d|3[01])[\.\/\-](0?[1-9]|1[012])[\.\/\-]([12]\d)?(\d\d)$/i,
+  hhmm: /([01]?[0-9]|2[0-3]):[0-5][0-9]$/i,
+  skip: /దాటు$/i,
+  // start: /(ప్రారంభం|కొత్త|ముగింపు)$/i,
+  exit: /(విడువు|నిష్క్రమించు|రద్దుచేయు)$/i,
 }
 
 /**
@@ -36,31 +50,17 @@ const patterns = {
  *       server reset - changing branches on welcome for known user.
  */
 const paths = {
-  stats: async (b) => {
-    await b.respond(
-      `Hi I'm Chatur Panchangam, Please select among...`
-    )
-    await paths.statsOption(b)
-  },
   start: async (b) => {
-    await b.respond(
-      `To start, I need your email so I can setup your user credentials.`
-    )
-    path(b).reset()
-    path(b).text(patterns.email, paths.email)
-    path(b).text(patterns.exit, paths.exit)
-    path(b).catchAll((b) => b.respond(
-      `Sorry, that doesn't look like a valid email address.`,
-      `Please try again, or reply \`quit\` if you want to try later.`
-    ))
+    await b.respond(i18n.__('Welcome'))
+    await paths.panchangOpts(b)
   },
-  statsOption: async (b) => {
+  panchangOpts: async (b) => {
     await b.respond(
-      "`Horoscope`, `Numerology`, `Match Making`, or `none`?"
+      `\`${i18n.__('horoscope')}\` \`${i18n.__('numerology')}\` \`${i18n.__('matchMaking')}\``
     )
     path(b).reset()
-    path(b).text(patterns.panchangamOptions, paths.panchangamOffers)
-    path(b).text(patterns.exit, paths.exit)
+    path(b).text(patternsTel.panchangamOptions, paths.panchangamOffers)
+    path(b).text(patternsTel.exit, paths.exit)
     path(b).catchAll((b) => {
       b.respond(
         `Sorry, I don't know how to get panchangam for ${b.match}.`,
@@ -70,26 +70,17 @@ const paths = {
   },
   panchangamOffers: async (b) => {
     // const framework = b.match[0]
-    const offers = 'Horoscope'
-    b.bot.logger.info(`[faldo] storing offers information  ${offers}`)
-    // credentials(b.message.user.id).setFramework(framework)
     const matched = b.match[0]
     await b.respond(
-      `Alright, it seems you want ${matched} :slight_smile:.`)
+      `మీ ${matched} కోసం :slight_smile:.`)
     path(b).reset()
     // const statics = await bot.adapters.message.driver.asyncCall('getStatistics');
     switch (matched) {
-      case 'Horoscope':
+      case i18n.__('horoscope'):
         await b.respond(
-          `Please enter your birth date in this format \`dd.mm.yyyy\``
+          `మీ జన్మదినం ఈ విధం గ తెలపండి \`dd.mm.yyyy\``
         );
-        path(b).text(patterns.ddmmyyyy, paths.getTime);
-        break;
-      case 'horoscope':
-        await b.respond(
-          `Please enter your birth date in this format \`dd.mm.yyyy\``
-        );
-        path(b).text(patterns.ddmmyyyy, paths.getTime);
+        path(b).text(patternsTel.ddmmyyyy, paths.getTime);
         break;
       case 'Numerology':
         // resp = statics.onlineUsers;      
@@ -102,12 +93,12 @@ const paths = {
         break;
     }
     // await b.respond(JSON.stringify(resp));
-    path(b).text(patterns.panchangamOptions, paths.panchangamOffers)
-    path(b).text(patterns.exit, paths.exit)
+    path(b).text(patternsTel.panchangamOptions, paths.panchangamOffers)
+    path(b).text(patternsTel.exit, paths.exit)
     path(b).catchAll((b) => {
       const message = b.message.message.toString();
       const actulaMsg = message.split(' ')[1];
-      var reg = new RegExp(patterns.ddmmyyyy);
+      var reg = new RegExp(patternsTel.ddmmyyyy);
       var resp = reg.test(actulaMsg);
       if (resp) {
         const params = getUserParamInfo(b);
@@ -115,7 +106,6 @@ const paths = {
         paths.getTime(b);
         return
       }
-      debugger;
       b.respond(
         `Sorry that's not an option right now.`,
         `Reply with either \`Horoscope\`, \`Numerology\`, \`Match Making\``
@@ -124,11 +114,11 @@ const paths = {
   },
   getTime: async (b) => {
     await b.respond(
-      `Enter birth time as \`hh:mm\``
+      `మీరు పుట్టిన సమయం \`hh:mm\``
     );
     path(b).reset();
-    path(b).text(patterns.hhmm, paths.horoscopeCall);
-    path(b).text(patterns.exit, paths.exit);
+    path(b).text(patternsTel.hhmm, paths.horoscopeCall);
+    path(b).text(patternsTel.exit, paths.exit);
     path(b).catchAll((b) => b.respond(
       `Sorry not an option now.`
     ));
@@ -140,7 +130,7 @@ const paths = {
     debugger;
     let dob = time.split('.');
     let hhmm = matched.split(':');
-    path(b).text(patterns.exit, paths.exit);
+    path(b).text(patternsTel.exit, paths.exit);
     try {
       panchgamAPI.call('astro_details', dob[0], dob[1], dob[2], hhmm[0], hhmm[1], 17.387140, 78.491684, 5.5, function(err, result) {
         b.respond(result);
@@ -164,4 +154,4 @@ const paths = {
   }
 }
 
-module.exports = { patterns, paths }
+module.exports = { patternsTel, paths }

@@ -1,0 +1,28 @@
+{
+    "Welcome": {
+        "ar": "مرحبا",
+        "fr": "Bienvenue",
+        "tg": "నమస్కారం, తెలుగు పంచాంగం కి స్వాగతం. ఈ కింది వాటిలో ఎంచుకోండి."
+    },
+    "horoscope": {
+        "tg": "జాతకం",
+        "eng": "Horoscope"
+    },
+    "numerology": {
+        "tg": "సంఖ్యా శాస్త్రం",
+        "eng": "Numerology"
+    },
+    "matchMaking": {
+        "tg": "గుణమేళనం",
+        "eng": "Match Making"
+    },
+    "Looking for user": {
+        "ar": "نبحث الان عن مستخدم اخر"
+    },
+    "You have disconnected.": {
+        "ar": "تم قطع الاتصال."
+    },
+    "Chat": {
+        "ar": "شات"
+    }
+}

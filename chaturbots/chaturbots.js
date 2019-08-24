@@ -1,3 +1,3 @@
-require('./statsbot');
+// require('./statsbot');
 require('./panchangam');
 // require('./account_setup');
