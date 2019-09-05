@@ -24,5 +24,20 @@
     },
     "Chat": {
         "ar": "شات"
+    },
+    "sorryIdontknowoption": {
+        "tg": "క్షమించలి, నాకు అర్దం కాలేదు",
+        "eng": ""
+    },
+    "quitortryagain": {
+        "tg": "మల్లి ప్రయత్నించు లేద విడువు"
+    },
+    "panchangamOffersEntry": {
+        "tg": "మీ {{matched}} కోసం :slight_smile:.",
+        "eng": "for {{matched}} :slight_smile:"
+    },
+    "getDateofBirth": {
+        "tg": "మీ జన్మదినం ఈ విధం గ తెలపండి dd.mm.yyyy",
+        "eng": "enter your date of birth as dd.mm.yyyy"
     }
 }

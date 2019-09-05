@@ -17,12 +17,12 @@ class Scene {
       console.log('helo', b.message);
       const uId = b.message.user.id
       if (this.isEngaged(uId) && b.scope === 'global') {
-        b.ignore()
+        b.ignore();
         bot.logger.debug(`[scene] entering ${b.message.user.name} into scene.`)
         await bot.receive(b.message, this.path(uId))
-        done()
+        done();
       } else {
-        next()
+        next();
       }
     })
   }

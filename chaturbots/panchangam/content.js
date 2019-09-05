@@ -3,6 +3,7 @@ const scene = require('./scene')
 const panchgamAPI = require('./sdk');
 const i18n_module = require('i18n-nodejs');
 const i18n = new i18n_module('tg', './../../locale.json');
+const i18nEng = new i18n_module('eng', './../../locale.json');
 
 console.log(i18n.__('Welcome'));
 // Shortcut to path handlers for user ID
@@ -16,28 +17,29 @@ function getUserParamInfo(b) {
   return collection[b.message.user.id];
 }
 
-// Keep patternsTel separated for cleaner conversation logic
+// Keep langPattern separated for cleaner conversation logic
 const patterns = {
-  start: /\b(hi astro|hello astro|hey astro)\b$/i,
-  panchangamOptions: new RegExp(`\b(${i18n.__('horoscope')}|${i18n.__('numerology')}|${i18n.__('matchMaking')})\b$`, 'i'),
-  // ddmmyyyyhhmm: /\b(pattern)\b$/i,
-  ddmmyyyy: /^(0?[1-9]|[12]\d|3[01])[\.\/\-](0?[1-9]|1[012])[\.\/\-]([12]\d)?(\d\d)$/i,
-  hhmm: /([01]?[0-9]|2[0-3]):[0-5][0-9]$/i,
-  skip: /skip$/i,
-  start: /(start|new|begin)$/i,
-  exit: /\b(quit|exit|cancel)\b$/i,
-}
-
-const patternsTel = {
-  start: /(నమస్కారం ఆస్ట్రో|హలో ఆస్ట్రో|హాయ్ ఆస్ట్రో|hi astro)$/i,
-  panchangamOptions: /(జాతకం|సంఖ్యా శాస్త్రం|గుణమేళనం|none)$/i,
-  // ddmmyyyyhhmm: /\b(pattern)\b$/i,
-  ddmmyyyy: /^(0?[1-9]|[12]\d|3[01])[\.\/\-](0?[1-9]|1[012])[\.\/\-]([12]\d)?(\d\d)$/i,
-  hhmm: /([01]?[0-9]|2[0-3]):[0-5][0-9]$/i,
-  skip: /దాటు$/i,
-  // start: /(ప్రారంభం|కొత్త|ముగింపు)$/i,
-  exit: /(విడువు|నిష్క్రమించు|రద్దుచేయు)$/i,
-}
+  'తెలుగు': {
+    start: /(నమస్కారం ఆస్ట్రో|హలో ఆస్ట్రో|హాయ్ ఆస్ట్రో|hi astro)$/i,
+    panchangamOptions: /(జాతకం|సంఖ్యా శాస్త్రం|గుణమేళనం|none)$/i,
+    // ddmmyyyyhhmm: /\b(pattern)\b$/i,
+    ddmmyyyy: /^(0?[1-9]|[12]\d|3[01])[\.\/\-](0?[1-9]|1[012])[\.\/\-]([12]\d)?(\d\d)$/i,
+    hhmm: /([01]?[0-9]|2[0-3]):[0-5][0-9]$/i,
+    skip: /దాటు$/i,
+    // start: /(ప్రారంభం|కొత్త|ముగింపు)$/i,
+    exit: /(విడువు|నిష్క్రమించు|రద్దుచేయు)$/i,
+  },
+  english: {
+    start: /\b(hi astro|hello astro|hey astro)\b$/i,
+    panchangamOptions: /\b(horoscope|numerology|Match making)\b$/i,
+    // ddmmyyyyhhmm: /\b(pattern)\b$/i,
+    ddmmyyyy: /^(0?[1-9]|[12]\d|3[01])[\.\/\-](0?[1-9]|1[012])[\.\/\-]([12]\d)?(\d\d)$/i,
+    hhmm: /([01]?[0-9]|2[0-3]):[0-5][0-9]$/i,
+    skip: /skip$/i,
+    start: /(start|new|begin)$/i,
+    exit: /\b(quit|exit|cancel)\b$/i,
+  }
+};
 
 /**
  * Path callbacks object keeps listener handling DRY and allows routing multiple
@@ -50,37 +52,40 @@ const patternsTel = {
  *       server reset - changing branches on welcome for known user.
  */
 const paths = {
-  start: async (b) => {
-    await b.respond(i18n.__('Welcome'))
+  start: async (b, lang, pattern) => {
+    this.lang = lang;
+    this.langPattern = pattern;
+    this.i18n = i18n;
+    if (lang === 'english') {
+      this.i18n = i18nEng;
+    }
+    await b.respond(this.i18n.__('Welcome'))
     await paths.panchangOpts(b)
   },
   panchangOpts: async (b) => {
     await b.respond(
-      `\`${i18n.__('horoscope')}\` \`${i18n.__('numerology')}\` \`${i18n.__('matchMaking')}\``
+      `\`${this.i18n.__('horoscope')}\` \`${this.i18n.__('numerology')}\` \`${this.i18n.__('matchMaking')}\``
     )
     path(b).reset()
-    path(b).text(patternsTel.panchangamOptions, paths.panchangamOffers)
-    path(b).text(patternsTel.exit, paths.exit)
+    path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
+    path(b).text(this.langPattern.exit, paths.exit)
     path(b).catchAll((b) => {
-      b.respond(
-        `Sorry, I don't know how to get panchangam for ${b.match}.`,
-        `Please try again, or reply \`quit\` if you want to try later.`)
+      b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
     })
 
   },
   panchangamOffers: async (b) => {
+    const self = this;
     // const framework = b.match[0]
     const matched = b.match[0]
     await b.respond(
-      `మీ ${matched} కోసం :slight_smile:.`)
+      `${this.i18n.__('panchangamOffersEntry', {matched: matched})}`);
     path(b).reset()
     // const statics = await bot.adapters.message.driver.asyncCall('getStatistics');
     switch (matched) {
-      case i18n.__('horoscope'):
-        await b.respond(
-          `మీ జన్మదినం ఈ విధం గ తెలపండి \`dd.mm.yyyy\``
-        );
-        path(b).text(patternsTel.ddmmyyyy, paths.getTime);
+      case this.i18n.__('horoscope'):
+        await b.respond(self.i18n.__('getDateofBirth'));
+        path(b).text(self.langPattern.ddmmyyyy, paths.getTime);
         break;
       case 'Numerology':
         // resp = statics.onlineUsers;      
@@ -93,12 +98,12 @@ const paths = {
         break;
     }
     // await b.respond(JSON.stringify(resp));
-    path(b).text(patternsTel.panchangamOptions, paths.panchangamOffers)
-    path(b).text(patternsTel.exit, paths.exit)
+    path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
+    path(b).text(this.langPattern.exit, paths.exit)
     path(b).catchAll((b) => {
       const message = b.message.message.toString();
       const actulaMsg = message.split(' ')[1];
-      var reg = new RegExp(patternsTel.ddmmyyyy);
+      var reg = new RegExp(this.langPattern.ddmmyyyy);
       var resp = reg.test(actulaMsg);
       if (resp) {
         const params = getUserParamInfo(b);
@@ -106,10 +111,7 @@ const paths = {
         paths.getTime(b);
         return
       }
-      b.respond(
-        `Sorry that's not an option right now.`,
-        `Reply with either \`Horoscope\`, \`Numerology\`, \`Match Making\``
-      );
+      b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
     });
   },
   getTime: async (b) => {
@@ -117,8 +119,8 @@ const paths = {
       `మీరు పుట్టిన సమయం \`hh:mm\``
     );
     path(b).reset();
-    path(b).text(patternsTel.hhmm, paths.horoscopeCall);
-    path(b).text(patternsTel.exit, paths.exit);
+    path(b).text(this.langPattern.hhmm, paths.horoscopeCall);
+    path(b).text(this.langPattern.exit, paths.exit);
     path(b).catchAll((b) => b.respond(
       `Sorry not an option now.`
     ));
@@ -127,10 +129,10 @@ const paths = {
     const params = getUserParamInfo(b);
     const matched = b.match[0];
     const time = params.ddmmyyyy;
-    debugger;
     let dob = time.split('.');
     let hhmm = matched.split(':');
-    path(b).text(patternsTel.exit, paths.exit);
+    path(b).text(this.langPattern.exit, paths.exit);
+    path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
     try {
       panchgamAPI.call('astro_details', dob[0], dob[1], dob[2], hhmm[0], hhmm[1], 17.387140, 78.491684, 5.5, function(err, result) {
         b.respond(result);
@@ -154,4 +156,8 @@ const paths = {
   }
 }
 
-module.exports = { patternsTel, paths }
+module.exports = function(opt) {
+  return {
+    patterns: patterns[opt], paths: paths
+  };
+}
