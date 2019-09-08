@@ -17,6 +17,17 @@ function getUserParamInfo(b) {
   return collection[b.message.user.id];
 }
 
+function getResourceInfo(b) {
+  if(collection.selectedoption){
+     const matched = collection.selectedoption;
+      switch(matched){
+        case 'Horoscope': return "astro_details";
+        case 'Basic Panchange': return "basic_panchang";
+        default: break;
+      }
+  }
+}
+
 // Keep langPattern separated for cleaner conversation logic
 const patterns = {
   'తెలుగు': {
@@ -31,7 +42,7 @@ const patterns = {
   },
   english: {
     start: /\b(hi astro|hello astro|hey astro)\b$/i,
-    panchangamOptions: /\b(horoscope|numerology|Match making)\b$/i,
+    panchangamOptions: /\b(horoscope|numerology|Match making|Basic Panchange)\b$/i,
     // ddmmyyyyhhmm: /\b(pattern)\b$/i,
     ddmmyyyy: /^(0?[1-9]|[12]\d|3[01])[\.\/\-](0?[1-9]|1[012])[\.\/\-]([12]\d)?(\d\d)$/i,
     hhmm: /([01]?[0-9]|2[0-3]):[0-5][0-9]$/i,
@@ -64,7 +75,7 @@ const paths = {
   },
   panchangOpts: async (b) => {
     await b.respond(
-      `\`${this.i18n.__('horoscope')}\` \`${this.i18n.__('numerology')}\` \`${this.i18n.__('matchMaking')}\``
+      `\`${this.i18n.__('horoscope')}\` \`${this.i18n.__('numerology')}\` \`${this.i18n.__('matchMaking')}\` \`${this.i18n.__('basicPanchang')}\``
     )
     path(b).reset()
     path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
@@ -76,8 +87,8 @@ const paths = {
   },
   panchangamOffers: async (b) => {
     const self = this;
-    // const framework = b.match[0]
-    const matched = b.match[0]
+    const matched = b.match[0];
+    collection['selectedoption'] = matched;
     await b.respond(
       `${this.i18n.__('panchangamOffersEntry', {matched: matched})}`);
     path(b).reset()
@@ -93,6 +104,10 @@ const paths = {
       case 'Match Making':
         // resp = statics.offlineUsers;      
         break;
+      case 'Basic Panchange':
+           await b.respond(self.i18n.__('getDateofBirth'));
+           path(b).text(self.langPattern.ddmmyyyy, paths.getTime);
+           break;   
       default:
         // resp = statics;
         break;
@@ -127,6 +142,7 @@ const paths = {
   },
   horoscopeCall: async (b) => {
     const params = getUserParamInfo(b);
+    const resource = getResourceInfo(b);
     const matched = b.match[0];
     const time = params.ddmmyyyy;
     let dob = time.split('.');
@@ -134,7 +150,7 @@ const paths = {
     path(b).text(this.langPattern.exit, paths.exit);
     path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
     try {
-      panchgamAPI.call('astro_details', dob[0], dob[1], dob[2], hhmm[0], hhmm[1], 17.387140, 78.491684, 5.5, function(err, result) {
+      panchgamAPI.call(resource, dob[0], dob[1], dob[2], hhmm[0], hhmm[1], 17.387140, 78.491684, 5.5, function(err, result) {
         b.respond(result);
       });
     } catch (error) {
