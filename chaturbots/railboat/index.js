@@ -3,7 +3,7 @@ const scene = require('./scene')
 
 
 // bot.global.enter(paths.start)
-bot.global.text(/(తెలుగు|english)$/, function(b) {
+bot.global.text(/(PNR)/i, function(b) {
     const message = b.message.toString();
      const splitMsg = message.split(' ');
      scene.setup(bot);

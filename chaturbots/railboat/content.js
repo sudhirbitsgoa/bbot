@@ -42,12 +42,11 @@ const patterns = {
 const paths = {
   start: async (b, lang, pattern) => {
     this.lang = lang;
-    this.langPattern = pattern;
+    this.langPattern = patterns.english;
     this.i18n = i18n;
     if (lang === 'english') {
       this.i18n = i18nEng;
     }
-    await b.respond(this.i18n.__('Welcome'))
     await paths.pnrcheckOpts(b)
   },
   pnrcheckOpts: async (b) => {
@@ -63,7 +62,7 @@ const paths = {
   },
   checkPnr: async (b) => {
     const pnrnumber = b.match[0];
-     path(b).text(this.langPattern.exit, paths.exit);
+    path(b).text(this.langPattern.exit, paths.exit);
     try {
       railAPI.call(pnrnumber, function(err, result) {
         b.respond(result);
