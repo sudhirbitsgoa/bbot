@@ -74,9 +74,39 @@ const paths = {
     await paths.panchangOpts(b)
   },
   panchangOpts: async (b) => {
-    await b.respond(
-      `\`${this.i18n.__('horoscope')}\` \`${this.i18n.__('numerology')}\` \`${this.i18n.__('matchMaking')}\` \`${this.i18n.__('basicPanchang')}\``
-    )
+   b.envelope.write('Choose Options:')
+    b.envelope.attach({ 
+      title: 'horizontal text buttons with url',
+      button_alignment: 'horizontal'
+    })
+    b.envelope.payload.quickReply({
+      type: 'button',
+      text: `${this.i18n.__('horoscope')}`,
+      url: '',
+      is_webview: false
+    })
+    b.envelope.payload.quickReply({
+      type: 'button',
+      text: `${this.i18n.__('basicPanchang')}`,
+      url: '',
+      is_webview: false
+    })
+    b.envelope.payload.quickReply({
+      type: 'button',
+      text: `${this.i18n.__('numerology')}`,
+      url: '',
+      is_webview: false
+    })
+    b.envelope.payload.quickReply({
+      type: 'button',
+      text: `${this.i18n.__('matchMaking')}`,
+      url: '',
+      is_webview: false
+    })
+    await b.respond().catch((err) => console.error(err))
+    // await b.respond(
+    //   `\`${this.i18n.__('horoscope')}\` \`${this.i18n.__('numerology')}\` \`${this.i18n.__('matchMaking')}\` \`${this.i18n.__('basicPanchang')}\``
+    // )
     path(b).reset()
     path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
     path(b).text(this.langPattern.exit, paths.exit)
