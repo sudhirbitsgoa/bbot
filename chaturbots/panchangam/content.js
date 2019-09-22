@@ -32,12 +32,12 @@ function getResourceInfo(b) {
 const patterns = {
   'తెలుగు': {
     start: /(నమస్కారం ఆస్ట్రో|హలో ఆస్ట్రో|హాయ్ ఆస్ట్రో|hi astro)$/i,
-    panchangamOptions: /(జాతకం|సంఖ్యా శాస్త్రం|గుణమేళనం|none)$/i,
+    panchangamOptions: /(జాతకం|సంఖ్యా శాస్త్రం|గుణమేళనం|బేసిక్ పంచంగ్)$/i,
     // ddmmyyyyhhmm: /\b(pattern)\b$/i,
     ddmmyyyy: /^(0?[1-9]|[12]\d|3[01])[\.\/\-](0?[1-9]|1[012])[\.\/\-]([12]\d)?(\d\d)$/i,
     hhmm: /([01]?[0-9]|2[0-3]):[0-5][0-9]$/i,
     skip: /దాటు$/i,
-    // start: /(ప్రారంభం|కొత్త|ముగింపు)$/i,
+     start: /(ప్రారంభం|కొత్త|ముగింపు)$/i,
     exit: /(విడువు|నిష్క్రమించు|రద్దుచేయు)$/i,
   },
   english: {
@@ -74,36 +74,39 @@ const paths = {
     await paths.panchangOpts(b)
   },
   panchangOpts: async (b) => {
-   b.envelope.write('Choose Options:')
-    b.envelope.attach({ 
-      title: 'horizontal text buttons with url',
-      button_alignment: 'horizontal'
-    })
-    b.envelope.payload.quickReply({
-      type: 'button',
-      text: `${this.i18n.__('horoscope')}`,
-      url: '',
-      is_webview: false
-    })
-    b.envelope.payload.quickReply({
-      type: 'button',
-      text: `${this.i18n.__('basicPanchang')}`,
-      url: '',
-      is_webview: false
-    })
-    b.envelope.payload.quickReply({
-      type: 'button',
-      text: `${this.i18n.__('numerology')}`,
-      url: '',
-      is_webview: false
-    })
-    b.envelope.payload.quickReply({
-      type: 'button',
-      text: `${this.i18n.__('matchMaking')}`,
-      url: '',
-      is_webview: false
-    })
-    await b.respond().catch((err) => console.error(err))
+   b.envelope.payload.custom({ 
+     "channel": "#general", "attachments": [{
+      "title": "Choose Options",
+      "button_alignment": "horizontal",
+      "actions": [
+      {
+        "type": "button",
+        "text": `${this.i18n.__('horoscope')}`,
+        "msg": `${this.i18n.__('horoscope')}`,
+        "msg_in_chat_window": true
+      },
+      {
+        "type": "button",
+        "text": `${this.i18n.__('basicPanchang')}`,
+        "msg": `${this.i18n.__('basicPanchang')}`,
+        "msg_in_chat_window": true
+      },
+      {
+        "type": "button",
+        "text": `${this.i18n.__('numerology')}`,
+        "msg": `${this.i18n.__('numerology')}`,
+        "msg_in_chat_window": true
+      },
+      {
+        "type": "button",
+        "text": `${this.i18n.__('matchMaking')}`,
+        "msg": `${this.i18n.__('matchMaking')}`,
+        "msg_in_chat_window": true
+      }
+      ]
+      }]
+  }) 
+  await b.respond().catch((err) => console.error(err))
     // await b.respond(
     //   `\`${this.i18n.__('horoscope')}\` \`${this.i18n.__('numerology')}\` \`${this.i18n.__('matchMaking')}\` \`${this.i18n.__('basicPanchang')}\``
     // )
@@ -134,7 +137,7 @@ const paths = {
       case 'Match Making':
         // resp = statics.offlineUsers;      
         break;
-      case 'Basic Panchange':
+      case this.i18n.__('basicPanchang'):
            await b.respond(self.i18n.__('getDateofBirth'));
            path(b).text(self.langPattern.ddmmyyyy, paths.getTime);
            break;   
@@ -161,8 +164,10 @@ const paths = {
   },
   getTime: async (b) => {
     await b.respond(
-      `మీరు పుట్టిన సమయం \`hh:mm\``
-    );
+      `${this.i18n.__('getTimeofBirth')}`);
+    // await b.respond(
+    //   `మీరు పుట్టిన సమయం \`hh:mm\``
+    // );
     path(b).reset();
     path(b).text(this.langPattern.hhmm, paths.horoscopeCall);
     path(b).text(this.langPattern.exit, paths.exit);

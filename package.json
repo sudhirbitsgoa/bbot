@@ -17,7 +17,7 @@
     "flag": "🇦🇺"
   },
   "dependencies": {
-    "bbot": "1.1.0",
+    "bbot": "^1.3.2",
     "email-addresses": "^3.0.3",
     "generate-password": "^1.4.2",
     "glitchmagic": "0.0.1",
@@ -27,7 +27,7 @@
     "turbproxy": "0.0.6"
   },
   "devDependencies": {
-    "nodemon": "^1.18.3"
+    "nodemon": "^1.19.2"
   },
   "scripts": {
     "setup": "node init.js",

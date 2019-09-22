@@ -43,5 +43,9 @@
     "getDateofBirth": {
         "tg": "మీ జన్మదినం ఈ విధం గ తెలపండి dd.mm.yyyy",
         "eng": "enter your date of birth as dd.mm.yyyy"
+    },
+    "getTimeofBirth": {
+        "tg": "మీరు పుట్టిన సమయం in hh:mm",
+        "eng": "the time you are born in hh:mm"
     }
 }
