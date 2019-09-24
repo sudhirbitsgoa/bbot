@@ -7,6 +7,6 @@ bot.global.text(/(PNR)/i, function(b) {
     const message = b.message.toString();
      const splitMsg = message.split(' ');
      scene.setup(bot);
-     const { paths, patterns } = require('./content')(splitMsg[1]);
-     paths.start(b, splitMsg[1], patterns);
+     const { paths } = require('./content')(splitMsg[1]);
+     paths.start(b);
 });

@@ -63,6 +63,15 @@ const patterns = {
  *       server reset - changing branches on welcome for known user.
  */
 const paths = {
+  langOption: async (b) => {
+    path(b).text(/(తెలుగు|english)$/, function(b) {
+      const message = b.message.toString();
+      const splitMsg = message.split(' ');
+      // scene.setup(bot);
+      const { patterns } = require('./content')(splitMsg[1]);
+      paths.start(b, splitMsg[1], patterns);
+    });
+  },
   start: async (b, lang, pattern) => {
     this.lang = lang;
     this.langPattern = pattern;

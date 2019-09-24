@@ -3,12 +3,10 @@ const scene = require('./scene')
 
 
 // bot.global.enter(paths.start)
-bot.global.text(/(తెలుగు|english)$/, function(b) {
-    const message = b.message.toString();
-    const splitMsg = message.split(' ');
+bot.global.text(/(panchangam)$/, function(b) {
     scene.setup(bot);
-    const { paths, patterns } = require('./content')(splitMsg[1]);
-    paths.start(b, splitMsg[1], patterns);
+    const { paths } = require('./content')();
+    paths.langOption(b);
 });
 
 // first ask user to select language
