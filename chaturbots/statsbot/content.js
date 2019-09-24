@@ -8,7 +8,7 @@ const path = (b) => scene.path(b.message.user.id)
 
 // Keep patterns separated for cleaner conversation logic
 const patterns = {
-  stats: /\b(hi|hello|hey)\b$/i,
+  stats: /\b(stats)\b$/i,
   email: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
   frameworks: /\b(totalUsers|onlineUsers|offlineUsers|totalChannelMessages|totalPrivateGroupMessages|none)\b$/i,
   username: /(\w*)$/i,

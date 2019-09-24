@@ -64,7 +64,8 @@ const patterns = {
  */
 const paths = {
   langOption: async (b) => {
-    path(b).text(/(తెలుగు|english)$/, function(b) {
+    b.respond("`english` `తెలుగు`");
+    path(b).text(/(తెలుగు|english)$/i, function(b) {
       const message = b.message.toString();
       const splitMsg = message.split(' ');
       // scene.setup(bot);
