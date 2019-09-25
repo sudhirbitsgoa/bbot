@@ -64,7 +64,28 @@ const patterns = {
  */
 const paths = {
   langOption: async (b) => {
-    b.respond("`english` `తెలుగు`");
+    b.envelope.write('Choose Language')
+    b.envelope.payload.custom({ 
+     "channel": "#general", "attachments": [{
+      "button_alignment": "horizontal",
+      "actions": [
+      {
+        "type": "button",
+        "text": 'english',
+        "msg": 'english',
+        "msg_in_chat_window": true
+      },
+      {
+        "type": "button",
+        "text": 'తెలుగు',
+        "msg": 'తెలుగు',
+        "msg_in_chat_window": true
+      }
+      ]
+    }]
+    })
+    await b.respond().catch((err) => console.error(err))
+    //b.respond("`english` `తెలుగు`");
     path(b).text(/(తెలుగు|english)$/i, function(b) {
       const message = b.message.toString();
       const splitMsg = message.split(' ');

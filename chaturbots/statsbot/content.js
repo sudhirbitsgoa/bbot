@@ -50,9 +50,54 @@ const paths = {
     ))
   },
   statsOption: async (b) => {
-    await b.respond(
-      "Do you need `totalUsers`, `onlineUsers`, `offlineUsers`, `totalChannelMessages`, `totalPrivateGroupMessages`, or `none`?"
-    )
+    b.envelope.payload.custom({ 
+     "channel": "#general", "attachments": [{
+     // "title": "Choose Options",
+      "button_alignment": "horizontal",
+      "actions": [
+      {
+        "type": "button",
+        "text": 'totalUsers',
+        "msg": 'totalUsers',
+        "msg_in_chat_window": true
+      },
+      {
+        "type": "button",
+        "text": 'onlineUsers',
+        "msg": 'onlineUsers',
+        "msg_in_chat_window": true
+      },
+      {
+        "type": "button",
+        "text": 'offlineUsers',
+        "msg": 'offlineUsers',
+        "msg_in_chat_window": true
+      },
+      {
+        "type": "button",
+        "text": 'totalChannelMessages',
+        "msg": 'totalChannelMessages',
+        "msg_in_chat_window": true
+      },
+      {
+        "type": "button",
+        "text": 'totalPrivateGroupMessages',
+        "msg": 'totalPrivateGroupMessages',
+        "msg_in_chat_window": true
+      },
+      {
+        "type": "button",
+        "text": 'none',
+        "msg": 'none',
+        "msg_in_chat_window": true
+      }
+      ]
+      }]
+  }) 
+  await b.respond().catch((err) => console.error(err))
+    // await b.respond(
+    //   "Do you need `totalUsers`, `onlineUsers`, `offlineUsers`, `totalChannelMessages`, `totalPrivateGroupMessages`, or `none`?"
+    // )
     path(b).reset()
     path(b).text(patterns.frameworks, paths.framework)
     path(b).text(patterns.exit, paths.exit)
