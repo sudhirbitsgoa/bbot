@@ -47,5 +47,13 @@
     "getTimeofBirth": {
         "tg": "మీరు పుట్టిన సమయం in hh:mm",
         "eng": "the time you are born in hh:mm"
+    },
+    "matchMakingReply": {
+        "tg": "{{matched}} త్వరలో :slight_smile:.",
+        "eng": "{{matched}} coming soon :slight_smile:"
+    },
+    "numerologyReply": {
+        "tg": "{{matched}} పురోగతిలో ఉంది :slight_smile:.",
+        "eng": "{{matched}} in progress :slight_smile:"
     }
 }

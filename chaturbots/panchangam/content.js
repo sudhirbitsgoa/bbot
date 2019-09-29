@@ -64,7 +64,7 @@ const patterns = {
  */
 const paths = {
   langOption: async (b) => {
-    b.envelope.write('Choose Language')
+    b.envelope.write('Hindu calendar information (English or Telugu)')
     b.envelope.payload.custom({ 
      "channel": "#general", "attachments": [{
       "button_alignment": "horizontal",
@@ -105,9 +105,10 @@ const paths = {
     await paths.panchangOpts(b)
   },
   panchangOpts: async (b) => {
+   b.envelope.write('Select an option  to continue.') 
    b.envelope.payload.custom({ 
      "channel": "#general", "attachments": [{
-      "title": "Choose Options",
+      //"title": "Choose Options",
       "button_alignment": "horizontal",
       "actions": [
       {
@@ -153,20 +154,20 @@ const paths = {
     const self = this;
     const matched = b.match[0];
     collection['selectedoption'] = matched;
-    await b.respond(
-      `${this.i18n.__('panchangamOffersEntry', {matched: matched})}`);
-    path(b).reset()
-    // const statics = await bot.adapters.message.driver.asyncCall('getStatistics');
     switch (matched) {
       case this.i18n.__('horoscope'):
         await b.respond(self.i18n.__('getDateofBirth'));
         path(b).text(self.langPattern.ddmmyyyy, paths.getTime);
         break;
       case 'Numerology':
-        // resp = statics.onlineUsers;      
+            await b.respond(
+            `${this.i18n.__('numerologyReply', {matched: matched})}`);
+           path(b).reset()     
         break;
       case 'Match Making':
-        // resp = statics.offlineUsers;      
+            await b.respond(
+            `${this.i18n.__('matchMakingReply', {matched: matched})}`);
+           path(b).reset()      
         break;
       case this.i18n.__('basicPanchang'):
            await b.respond(self.i18n.__('getDateofBirth'));
@@ -176,7 +177,6 @@ const paths = {
         // resp = statics;
         break;
     }
-    // await b.respond(JSON.stringify(resp));
     path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
     path(b).text(this.langPattern.exit, paths.exit)
     path(b).catchAll((b) => {

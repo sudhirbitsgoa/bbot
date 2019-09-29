@@ -3,7 +3,7 @@ require('./statsbot');
 require('./panchangam');
 require('./railboat');
 bot.global.text(/hi|hello|hey/i, function(b) {
-	b.envelope.write('Please select among these bots...')
+	b.envelope.write('Welcome to chatur - your intelligent assistant.I can help you in some ways.')
 	b.envelope.payload.custom({ 
      "channel": "#general", "attachments": [{
       "button_alignment": "horizontal",

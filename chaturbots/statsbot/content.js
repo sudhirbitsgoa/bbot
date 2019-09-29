@@ -33,7 +33,7 @@ const patterns = {
 const paths = {
   stats: async (b) => {
     await b.respond(
-      `Hi I'm Chatur Stats, Please select what stats are needed`
+      `ChaturAI statistics (for system information)`
     )
     await paths.statsOption(b)
   },
