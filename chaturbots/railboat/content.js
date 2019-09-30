@@ -51,7 +51,7 @@ const paths = {
   },
   pnrcheckOpts: async (b) => {
     await b.respond(
-      `Hi I'm Bot, I need your PNR Number to check status.`
+      `Check the status of your train ticket with PNR ?`
     )
     path(b).reset()
     path(b).text(this.langPattern.pnr, paths.checkPnr)
