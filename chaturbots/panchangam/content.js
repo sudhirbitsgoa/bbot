@@ -42,8 +42,8 @@ const patterns = {
   },
   english: {
     start: /\b(hi astro|hello astro|hey astro)\b$/i,
-    panchangamOptions: /\b(horoscope|numerology|Match making|Basic Panchange)\b$/i,
-    // ddmmyyyyhhmm: /\b(pattern)\b$/i,
+    panchangamOptions: /\b(horoscope|numerology|Match making|Basic Panchange|dailyhoroscope)\b$/i,
+    dailyhoroscopeOptions: /\b(aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)\b$/i,
     ddmmyyyy: /^(0?[1-9]|[12]\d|3[01])[\.\/\-](0?[1-9]|1[012])[\.\/\-]([12]\d)?(\d\d)$/i,
     hhmm: /([01]?[0-9]|2[0-3]):[0-5][0-9]$/i,
     skip: /skip$/i,
@@ -51,6 +51,8 @@ const patterns = {
     exit: /\b(quit|exit|cancel)\b$/i,
   }
 };
+
+const zodiacnames = ["aries", "taurus", "gemini","cancer","leo","virgo","libra","scorpio","sagittarius","capricorn","aquarius","pisces"];
 
 /**
  * Path callbacks object keeps listener handling DRY and allows routing multiple
@@ -63,7 +65,7 @@ const patterns = {
  *       server reset - changing branches on welcome for known user.
  */
 const paths = {
-  langOption: async (b) => {
+  langOption: async (b,options) => {
     b.envelope.write('Hindu calendar information (English or Telugu)')
     b.envelope.payload.custom({ 
      "channel": "#general", "attachments": [{
@@ -85,16 +87,14 @@ const paths = {
     }]
     })
     await b.respond().catch((err) => console.error(err))
-    //b.respond("`english` `తెలుగు`");
     path(b).text(/(తెలుగు|english)$/i, function(b) {
       const message = b.message.toString();
       const splitMsg = message.split(' ');
-      // scene.setup(bot);
       const { patterns } = require('./content')(splitMsg[1]);
-      paths.start(b, splitMsg[1], patterns);
+         paths.start(b, splitMsg[1], patterns, options);
     });
   },
-  start: async (b, lang, pattern) => {
+  start: async (b, lang, pattern, option) => {
     this.lang = lang;
     this.langPattern = pattern;
     this.i18n = i18n;
@@ -102,13 +102,16 @@ const paths = {
       this.i18n = i18nEng;
     }
     await b.respond(this.i18n.__('Welcome'))
-    await paths.panchangOpts(b)
+    if(option == 'dailyhoroscope'){
+         await paths.dailyhoroscopeOpts(b);
+    }else{
+         await paths.panchangOpts(b);
+    }
   },
   panchangOpts: async (b) => {
    b.envelope.write('Select an option  to continue.') 
    b.envelope.payload.custom({ 
      "channel": "#general", "attachments": [{
-      //"title": "Choose Options",
       "button_alignment": "horizontal",
       "actions": [
       {
@@ -139,16 +142,12 @@ const paths = {
       }]
   }) 
   await b.respond().catch((err) => console.error(err))
-    // await b.respond(
-    //   `\`${this.i18n.__('horoscope')}\` \`${this.i18n.__('numerology')}\` \`${this.i18n.__('matchMaking')}\` \`${this.i18n.__('basicPanchang')}\``
-    // )
     path(b).reset()
     path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
     path(b).text(this.langPattern.exit, paths.exit)
     path(b).catchAll((b) => {
       b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
     })
-
   },
   panchangamOffers: async (b) => {
     const self = this;
@@ -193,12 +192,49 @@ const paths = {
       b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
     });
   },
+  dailyhoroscopeOpts: async (b) => {
+     b.envelope.write('Choose Your Zodiac Sign') 
+     var buttons = [];
+     zodiacnames.forEach(function (item,index) {
+          buttons.push({
+              "type": "button",
+              "text": `${item}`,
+              "msg": `${item}`,
+              "msg_in_chat_window": true
+          })
+     })
+     b.envelope.payload.custom({ 
+     "channel": "#general", "attachments": [{
+      "button_alignment": "horizontal",
+      "actions": buttons
+      }]
+    }) 
+    await b.respond().catch((err) => console.error(err)) 
+    path(b).reset()
+    path(b).text(this.langPattern.dailyhoroscopeOptions, paths.getdailyHoroscope)
+    path(b).text(this.langPattern.exit, paths.exit)
+    path(b).catchAll((b) => {
+      b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
+    })
+  },
+  getdailyHoroscope: async (b) => {
+      const self = this;
+      const matched = b.match[0];
+      //const resource = 'sun_sign_prediction/daily/:'+matched;
+      const resource = matched +'/today/';
+      path(b).text(this.langPattern.exit, paths.exit);
+      path(b).text(this.langPattern.dailyhoroscopeOptions, paths.getdailyHoroscope)
+      try {
+      panchgamAPI.dailyHoroscopeCall(resource, 5.5, function(err, result) {
+          b.respond(result);
+      });
+      } catch (error) {
+        console.log('erro', error);
+      }
+  },
   getTime: async (b) => {
     await b.respond(
       `${this.i18n.__('getTimeofBirth')}`);
-    // await b.respond(
-    //   `మీరు పుట్టిన సమయం \`hh:mm\``
-    // );
     path(b).reset();
     path(b).text(this.langPattern.hhmm, paths.horoscopeCall);
     path(b).text(this.langPattern.exit, paths.exit);
@@ -222,7 +258,6 @@ const paths = {
     } catch (error) {
       console.log('erro', error);
     }
-
   },
   finish: async (b) => {
     await b.respond(`Amazing, I'll just get that ...`)
