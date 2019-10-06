@@ -8,25 +8,31 @@ bot.global.text(/hi|hello|hey/i, function(b) {
      "channel": "#general", "attachments": [{
       "button_alignment": "horizontal",
       "actions": [
-      {
-        "type": "button",
-        "text": 'stats',
-        "msg": 'stats',
-        "msg_in_chat_window": true
-      },
-      {
-        "type": "button",
-        "text": 'panchangam',
-        "msg": 'panchangam',
-        "msg_in_chat_window": true
-      },
-      {
-        "type": "button",
-        "text": 'pnr',
-        "msg": 'pnr',
-        "msg_in_chat_window": true
-      }
-      ]
+          {
+            "type": "button",
+            "text": 'stats',
+            "msg": 'stats',
+            "msg_in_chat_window": true
+          },
+          {
+            "type": "button",
+            "text": 'panchangam',
+            "msg": 'panchangam',
+            "msg_in_chat_window": true
+          },
+          {
+            "type": "button",
+            "text": 'pnr',
+            "msg": 'pnr',
+            "msg_in_chat_window": true
+          },
+          {
+            "type": "button",
+            "text": "Daily Horoscope",
+            "msg": "dailyhoroscope",
+            "msg_in_chat_window": true
+          }
+       ]
       }]
   }) 
   b.respond().catch((err) => console.error(err))

@@ -1,8 +1,8 @@
 var request = require('request');
 
 var baseUrl = "http://api.vedicrishiastro.com/v1/";
-var userID =  "605030";
-var apiKey = "766d71aba90075d87fb8d9b5a2d294d2";
+var userID =  "605231";
+var apiKey = "f36c2de410171560faa69b0c99086431";
 
 
 var getResponse = (resource, data, callback) => {
@@ -32,6 +32,20 @@ var getResponse = (resource, data, callback) => {
 	)
 
 };
+
+var callDailyHoroscopeApi = (resource, callback) => {
+	  var url = 'http://sandipbgt.com/theastrologer/api/horoscope/'+resource;
+	  request(url, { json: false }, (err, res, body) => {
+		  if (!err) { 
+		      if(typeof callback === 'function') {
+				return callback(null, body);
+			  }
+		  }
+		  if(typeof callback === 'function') {
+			return callback(err);
+		  }
+	  });
+}
 
 var packageHoroData = (date, month, year, hour, minute, latitude, longitude, timezone) => {
 	return {
@@ -100,6 +114,12 @@ var api = {
 	matchMakingCall: (resource, maleBirthData, femaleBirthData, callback)=> {
 		var data = packageMatchMakingData(maleBirthData, femaleBirthData);
 		return getResponse(resource, data, callback);
+	},
+
+	dailyHoroscopeCall: (resource,timezone,callback) => {
+		//var data = {'tzone': timezone};
+		//return getResponse(resource, data, callback);
+		return callDailyHoroscopeApi(resource, callback);
 	}
 
 }

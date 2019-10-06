@@ -3,10 +3,12 @@ const scene = require('./scene')
 
 
 // bot.global.enter(paths.start)
-bot.global.text(/(panchangam)$/, function(b) {
+bot.global.text(/(panchangam|dailyhoroscope)$/, function(b) {
     scene.setup(bot);
     const { paths } = require('./content')();
-    paths.langOption(b);
+    const message = b.message.toString();
+    const splitMsg = message.split(' ');
+    paths.langOption(b,splitMsg[1]);
 });
 
 // first ask user to select language
