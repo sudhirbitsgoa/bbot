@@ -16,12 +16,6 @@ bot.global.text(/hi|hello|hey/i, function(b) {
           },
           {
             "type": "button",
-            "text": 'panchangam',
-            "msg": 'panchangam',
-            "msg_in_chat_window": true
-          },
-          {
-            "type": "button",
             "text": 'pnr',
             "msg": 'pnr',
             "msg_in_chat_window": true
@@ -30,6 +24,30 @@ bot.global.text(/hi|hello|hey/i, function(b) {
             "type": "button",
             "text": "Daily Horoscope",
             "msg": "dailyhoroscope",
+            "msg_in_chat_window": true
+          },
+          {
+            "type": "button",
+            "text": "horoscope",
+            "msg": "horoscope",
+            "msg_in_chat_window": true
+          },
+          {
+            "type": "button",
+            "text": "Basic Panchange",
+            "msg": "Basic Panchange",
+            "msg_in_chat_window": true
+          },
+          {
+            "type": "button",
+            "text": "Numerology",
+            "msg": "Numerology",
+            "msg_in_chat_window": true
+          },
+          {
+            "type": "button",
+            "text": "Match Making",
+            "msg": "Match Making",
             "msg_in_chat_window": true
           }
        ]

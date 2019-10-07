@@ -95,6 +95,7 @@ const paths = {
     });
   },
   start: async (b, lang, pattern, option) => {
+      //console.log("in start function values are",b,lang,pattern,option);
     this.lang = lang;
     this.langPattern = pattern;
     this.i18n = i18n;
@@ -105,7 +106,8 @@ const paths = {
     if(option == 'dailyhoroscope'){
          await paths.dailyhoroscopeOpts(b);
     }else{
-         await paths.panchangOpts(b);
+         await paths.getPanchangDetails(b,option);
+        // await paths.panchangOpts(b);
     }
   },
   panchangOpts: async (b) => {
@@ -149,13 +151,15 @@ const paths = {
       b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
     })
   },
-  panchangamOffers: async (b) => {
+  getPanchangDetails: async (b,matched) => {
     const self = this;
-    const matched = b.match[0];
+    //const matched = b.match[0];
+    console.log("matched value is",matched);
     collection['selectedoption'] = matched;
     switch (matched) {
       case this.i18n.__('horoscope'):
         await b.respond(self.i18n.__('getDateofBirth'));
+        path(b).reset() 
         path(b).text(self.langPattern.ddmmyyyy, paths.getTime);
         break;
       case 'Numerology':
@@ -170,6 +174,53 @@ const paths = {
         break;
       case this.i18n.__('basicPanchang'):
            await b.respond(self.i18n.__('getDateofBirth'));
+           path(b).reset() 
+           path(b).text(self.langPattern.ddmmyyyy, paths.getTime);
+           break;   
+      default:
+        // resp = statics;
+        break;
+    }
+    path(b).reset()
+    path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
+    path(b).text(this.langPattern.exit, paths.exit)
+    path(b).catchAll((b) => {
+      const message = b.message.message.toString();
+      const actulaMsg = message.split(' ')[1];
+      var reg = new RegExp(this.langPattern.ddmmyyyy);
+      var resp = reg.test(actulaMsg);
+      if (resp) {
+        const params = getUserParamInfo(b);
+        params.ddmmyyyy = actulaMsg;
+        paths.getTime(b);
+        return
+      }
+      b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
+    });
+  },
+  panchangamOffers: async (b) => {
+    const self = this;
+    const matched = b.match[0];
+    collection['selectedoption'] = matched;
+    switch (matched) {
+      case this.i18n.__('horoscope'):
+        await b.respond(self.i18n.__('getDateofBirth'));
+        path(b).reset() 
+        path(b).text(self.langPattern.ddmmyyyy, paths.getTime);
+        break;
+      case 'Numerology':
+            await b.respond(
+            `${this.i18n.__('numerologyReply', {matched: matched})}`);
+           path(b).reset()     
+        break;
+      case 'Match Making':
+            await b.respond(
+            `${this.i18n.__('matchMakingReply', {matched: matched})}`);
+           path(b).reset()      
+        break;
+      case this.i18n.__('basicPanchang'):
+           await b.respond(self.i18n.__('getDateofBirth'));
+           path(b).reset() 
            path(b).text(self.langPattern.ddmmyyyy, paths.getTime);
            break;   
       default:
