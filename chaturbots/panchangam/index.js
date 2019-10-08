@@ -3,10 +3,10 @@ const scene = require('./scene')
 
 
 // bot.global.enter(paths.start)
-bot.global.text(/(panchangam|dailyhoroscope)$/, function(b) {
-    scene.setup(bot);
+bot.global.text(/(panchangam|dailyhoroscope|horoscope|numerology|Match making|Basic Panchange)$/, function(b) {
     const { paths } = require('./content')();
     const message = b.message.toString();
+    scene.setup(bot);
     const splitMsg = message.split(' ');
     paths.langOption(b,splitMsg[1]);
 });
