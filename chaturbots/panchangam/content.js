@@ -10,6 +10,7 @@ console.log(i18n.__('Welcome'));
 const path = (b) => scene.path(b.message.user.id)
 
 const collection = {};
+const matchCollection = {};
 function getUserParamInfo(b) {
   if (!collection[b.message.user.id]) {
     collection[b.message.user.id] = {};
@@ -20,9 +21,10 @@ function getUserParamInfo(b) {
 function getResourceInfo(b) {
   if(collection.selectedoption){
      const matched = collection.selectedoption;
+     console.log("matched value is",matched);
       switch(matched){
         case 'Horoscope': return "astro_details";
-        case 'Basic Panchange': return "basic_panchang";
+        case 'Basicpanchange': return "basic_panchang";
         default: break;
       }
   }
@@ -49,6 +51,7 @@ const patterns = {
     skip: /skip$/i,
     start: /(start|new|begin)$/i,
     exit: /\b(quit|exit|cancel)\b$/i,
+    strddmmyyyy: /(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})/,
   }
 };
 
@@ -95,7 +98,6 @@ const paths = {
     });
   },
   start: async (b, lang, pattern, option) => {
-      //console.log("in start function values are",b,lang,pattern,option);
     this.lang = lang;
     this.langPattern = pattern;
     this.i18n = i18n;
@@ -153,8 +155,6 @@ const paths = {
   },
   getPanchangDetails: async (b,matched) => {
     const self = this;
-    //const matched = b.match[0];
-    console.log("matched value is",matched);
     collection['selectedoption'] = matched;
     switch (matched) {
       case this.i18n.__('horoscope'):
@@ -167,11 +167,10 @@ const paths = {
             `${this.i18n.__('numerologyReply', {matched: matched})}`);
            path(b).reset()     
         break;
-      case 'Match Making':
-            await b.respond(
-            `${this.i18n.__('matchMakingReply', {matched: matched})}`);
-           path(b).reset()      
-        break;
+      case this.i18n.__('matchMaking'):
+             path(b).reset()
+             paths.getBoyDateOfBirth(b);    
+             break;
       case this.i18n.__('basicPanchang'):
            await b.respond(self.i18n.__('getDateofBirth'));
            path(b).reset() 
@@ -198,6 +197,83 @@ const paths = {
       b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
     });
   },
+  getBoyTimeOfBirth: async(b) => {
+     await b.respond(
+      `${this.i18n.__('getBoysTimeOfBirth')}`);
+        path(b).reset();
+        path(b).text(this.langPattern.exit, paths.exit);
+        path(b).catchAll((b) => {
+           const message = b.message.message.toString();
+           const actulaMsg = message.split(' ')[1];
+           var reg = new RegExp(this.langPattern.hhmm);
+           var resp = reg.test(actulaMsg);
+           if(resp){
+              const params = getUserParamInfo(b);
+              params.boyhhmm = actulaMsg;
+              paths.getGirlDateOfBirth(b);
+              return
+           }
+           b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
+        });
+  },
+  getGirlTimeOfBirth: async(b) => {
+        await b.respond(`${this.i18n.__('getGirlTimeOfBirth')}`);
+        path(b).reset();
+        path(b).text(this.langPattern.exit, paths.exit);
+        path(b).catchAll((b) => {
+           const message = b.message.message.toString();
+           const actulaMsg = message.split(' ')[1];
+           var reg = new RegExp(this.langPattern.hhmm);
+           var resp = reg.test(actulaMsg);
+           if(resp){
+              const params = getUserParamInfo(b);
+              params.girlhhmm = actulaMsg;
+              paths.getMatchMakingDetail(b);
+              return
+           }
+           b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
+        });
+  },
+  getBoyDateOfBirth: async(b) => {
+      const self = this;
+      await b.respond(self.i18n.__('getBoysDateOfBirth'));
+      path(b).reset()
+      path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
+      path(b).text(this.langPattern.exit, paths.exit)
+      path(b).catchAll((b) => {
+        const message = b.message.message.toString();
+        const actulaMsg = message.split(' ')[1];
+        var reg = new RegExp(this.langPattern.ddmmyyyy);
+        var resp = reg.test(actulaMsg);
+        if (resp) {
+          const params = getUserParamInfo(b);
+          params.boyddmmyyyy = actulaMsg;
+          paths.getBoyTimeOfBirth(b);
+          return
+        }
+        b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
+      });
+  },
+  getGirlDateOfBirth: async(b) => {
+      const self = this;
+      await b.respond(self.i18n.__('getGirlDateOfBirth'));
+      path(b).reset()
+      path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
+      path(b).text(this.langPattern.exit, paths.exit)
+      path(b).catchAll((b) => {
+        const message = b.message.message.toString();
+        const actulaMsg = message.split(' ')[1];
+        var reg = new RegExp(this.langPattern.ddmmyyyy);
+        var resp = reg.test(actulaMsg);
+        if (resp) {
+          const params = getUserParamInfo(b);
+          params.girlddmmyyyy = actulaMsg;
+          paths.getGirlTimeOfBirth(b);
+          return
+        }
+        b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
+      });
+  },
   panchangamOffers: async (b) => {
     const self = this;
     const matched = b.match[0];
@@ -213,7 +289,7 @@ const paths = {
             `${this.i18n.__('numerologyReply', {matched: matched})}`);
            path(b).reset()     
         break;
-      case 'Match Making':
+      case this.i18n.__('matchMaking'):
             await b.respond(
             `${this.i18n.__('matchMakingReply', {matched: matched})}`);
            path(b).reset()      
@@ -271,7 +347,6 @@ const paths = {
   getdailyHoroscope: async (b) => {
       const self = this;
       const matched = b.match[0];
-      //const resource = 'sun_sign_prediction/daily/:'+matched;
       const resource = matched +'/today/';
       path(b).text(this.langPattern.exit, paths.exit);
       path(b).text(this.langPattern.dailyhoroscopeOptions, paths.getdailyHoroscope)
@@ -292,6 +367,26 @@ const paths = {
     path(b).catchAll((b) => b.respond(
       `Sorry not an option now.`
     ));
+  },
+  getMatchMakingDetail: async (b) =>{
+     const params = getUserParamInfo(b);
+     let bdate = params.boyddmmyyyy;
+     let gdate = params.girlddmmyyyy;
+     let btime = params.boyhhmm;
+     let gtime = params.girlhhmm;
+     let bdob = bdate.split('.');
+     let gdob = gdate.split('.');
+     let bhhmm = btime.split(':');
+     let ghhmm = gtime.split(':');
+     path(b).text(this.langPattern.exit, paths.exit);
+     path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
+     try {
+        panchgamAPI.matchMakingCall('match_ashtakoot_points', bdob[0], bdob[1], bdob[2], bhhmm[0], bhhmm[1], 17.387140, 78.491684, 5.5,gdob[0], gdob[1], gdob[2], ghhmm[0], ghhmm[1], 17.387140, 78.491684, 5.5, function(err, result) {
+          b.respond(result);
+        });
+      } catch (error) {
+        console.log('erro', error);
+    }
   },
   horoscopeCall: async (b) => {
     const params = getUserParamInfo(b);
