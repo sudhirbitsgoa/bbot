@@ -35,7 +35,7 @@ bot.global.text(/hi|hello|hey/i, function(b) {
           {
             "type": "button",
             "text": "Basic Panchange",
-            "msg": "Basic Panchange",
+            "msg": "Basicpanchange",
             "msg_in_chat_window": true
           },
           {
@@ -47,7 +47,7 @@ bot.global.text(/hi|hello|hey/i, function(b) {
           {
             "type": "button",
             "text": "Match Making",
-            "msg": "Match Making",
+            "msg": "Matchmaking",
             "msg_in_chat_window": true
           }
        ]

@@ -14,11 +14,11 @@
     },
     "matchMaking": {
         "tg": "గుణమేళనం",
-        "eng": "Match Making"
+        "eng": "Matchmaking"
     },
     "basicPanchang": {
         "tg": "బేసిక్ పంచంగ్",
-        "eng": "Basic Panchange"
+        "eng": "Basicpanchange"
     },
     "Looking for user": {
         "ar": "نبحث الان عن مستخدم اخر"
@@ -44,9 +44,29 @@
         "tg": "మీ జన్మదినం ఈ విధం గ తెలపండి dd.mm.yyyy",
         "eng": "enter your date of birth as dd.mm.yyyy"
     },
+    "getBoysDateOfBirth": {
+         "tg": "అబ్బాయిల పుట్టిన తేదీని నమోదు చేయండి dd.mm.yyyy",
+         "eng": "Enter Boy date of birth as dd.mm.yyyy"
+    },
+    "getGirlDateOfBirth": {
+        "tg": "అమ్మాయి పుట్టిన తేదీని నమోదు చేయండి hh:mm",
+        "eng": "Enter Girl date of birth as dd.mm.yyyy"
+    },
+    "getBoysTimeOfBirth": {
+         "tg": "బాలుడు పుట్టిన సమయాన్ని నమోదు చేయండి",
+         "eng": "Enter Boy time of birth in hh:mm"
+    },
+    "getGirlTimeOfBirth": {
+       "tg": "అమ్మాయి పుట్టిన సమయాన్ని నమోదు చేయండి hh:mm",
+       "eng": "Enter Girl time of birth in hh:mm"
+    },
     "getTimeofBirth": {
         "tg": "మీరు పుట్టిన సమయం in hh:mm",
         "eng": "the time you are born in hh:mm"
+    },
+    "getNameOfPersion": {
+       "tg": "పెర్షన్ పేరును నమోదు చేయండి",
+       "eng":"Enter Name Of The Persion"
     },
     "matchMakingReply": {
         "tg": "{{matched}} త్వరలో :slight_smile:.",

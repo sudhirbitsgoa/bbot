@@ -1,8 +1,9 @@
 var request = require('request');
 
 var baseUrl = "http://api.vedicrishiastro.com/v1/";
-var userID =  "605231";
-var apiKey = "f36c2de410171560faa69b0c99086431";
+var userID =  "605238";
+var apiKey = "3c881da11d427de42ca53c128ad30eae";
+//var baseUrl = "https://json.astrologyapi.com/v1/";
 
 
 var getResponse = (resource, data, callback) => {
@@ -27,7 +28,6 @@ var getResponse = (resource, data, callback) => {
 			if(typeof callback === 'function') {
 				return callback(err);
 			}
-			console.log('callback not provided properly');
 		}
 	)
 
@@ -68,7 +68,27 @@ var packageNumeroData = (date, month, year, name) => {
         'year': year,
         'name': name
     }
+};
 
+var matchMakingData = (m_day, m_month, m_year, m_hour, m_min, m_lat, m_lon, m_tzone, f_day, f_month, f_year, f_hour, f_min, f_lat, f_lon, f_tzone) => {
+	 return {
+	 	'm_day': m_day,
+	 	'm_month': m_month,
+	 	'm_year': m_year,
+	 	'm_hour': m_hour,
+	 	'm_min': m_min,
+	 	'm_lat': m_lat,
+	 	'm_lon': m_lon,
+	 	'm_tzone': m_tzone,
+	 	'f_day': f_day,
+	 	'f_month': f_month,
+	 	'f_year': f_year,
+	 	'f_hour': f_hour,
+	 	'f_min': f_min,
+	 	'f_lat': f_lat,
+	 	'f_lon': f_lon,
+	 	'f_tzone': f_tzone
+	 }
 };
 
 var packageMatchMakingData = (maleBirthData, femaleBirthData) => {
@@ -111,10 +131,15 @@ var api = {
 		return getResponse(resource, data, callback);
 	},
 
-	matchMakingCall: (resource, maleBirthData, femaleBirthData, callback)=> {
-		var data = packageMatchMakingData(maleBirthData, femaleBirthData);
+	matchMakingCall: (resource, m_day, m_month, m_year, m_hour, m_min, m_lat, m_lon, m_tzone, f_day, f_month, f_year, f_hour, f_min, f_lat, f_lon, f_tzone, callback)=> {
+		var data = matchMakingData(m_day, m_month, m_year, m_hour, m_min, m_lat, m_lon, m_tzone, f_day, f_month, f_year, f_hour, f_min, f_lat, f_lon, f_tzone);
 		return getResponse(resource, data, callback);
 	},
+
+	// matchMakingCall: (resource, maleBirthData, femaleBirthData, callback)=> {
+	// 	var data = packageMatchMakingData(maleBirthData, femaleBirthData);
+	// 	return getResponse(resource, data, callback);
+	// },
 
 	dailyHoroscopeCall: (resource,timezone,callback) => {
 		//var data = {'tzone': timezone};
