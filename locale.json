@@ -64,6 +64,10 @@
         "tg": "మీరు పుట్టిన సమయం in hh:mm",
         "eng": "the time you are born in hh:mm"
     },
+    "getNameOfPersion": {
+       "tg": "పెర్షన్ పేరును నమోదు చేయండి",
+       "eng":"Enter Name Of The Persion"
+    },
     "matchMakingReply": {
         "tg": "{{matched}} త్వరలో :slight_smile:.",
         "eng": "{{matched}} coming soon :slight_smile:"
