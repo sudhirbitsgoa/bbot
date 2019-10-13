@@ -34,7 +34,8 @@
         "eng": ""
     },
     "quitortryagain": {
-        "tg": "మల్లి ప్రయత్నించు లేద విడువు"
+		"tg": "మల్లి ప్రయత్నించు లేద విడువు",
+		"eng": "quit or try again"
     },
     "panchangamOffersEntry": {
         "tg": "మీ {{matched}} కోసం :slight_smile:.",
