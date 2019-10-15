@@ -22,7 +22,7 @@ function getResourceInfo(b) {
   if(collection.selectedoption){
      const matched = collection.selectedoption;
       switch(matched){
-        case 'Horoscope': return "astro_details";
+        case 'horoscope': return "astro_details";
         case 'Basicpanchange': return "basic_panchang";
         default: break;
       }
@@ -34,7 +34,6 @@ const patterns = {
   'తెలుగు': {
     start: /(నమస్కారం ఆస్ట్రో|హలో ఆస్ట్రో|హాయ్ ఆస్ట్రో|hi astro)$/i,
     panchangamOptions: /(జాతకం|సంఖ్యా శాస్త్రం|గుణమేళనం|బేసిక్ పంచంగ్)$/i,
-    // ddmmyyyyhhmm: /\b(pattern)\b$/i,
     ddmmyyyy: /^(0?[1-9]|[12]\d|3[01])[\.\/\-](0?[1-9]|1[012])[\.\/\-]([12]\d)?(\d\d)$/i,
     hhmm: /([01]?[0-9]|2[0-3]):[0-5][0-9]$/i,
     skip: /దాటు$/i,
@@ -43,7 +42,6 @@ const patterns = {
   },
   english: {
     start: /\b(hi astro|hello astro|hey astro)\b$/i,
-   // panchangamOptions: /\b(horoscope|numerology|Match making|Basic Panchange|dailyhoroscope)\b$/i,
     panchangamOptions:/\b(panchangam|dailyhoroscope|horoscope|Numerology|Matchmaking|Basicpanchange)\b$/i,
     dailyhoroscopeOptions: /\b(aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)\b$/i,
     ddmmyyyy: /^(0?[1-9]|[12]\d|3[01])[\.\/\-](0?[1-9]|1[012])[\.\/\-]([12]\d)?(\d\d)$/i,
@@ -103,8 +101,12 @@ const paths = {
     this.lang = lang;
     this.langPattern = pattern;
     this.i18n = i18n;
+    const params = getUserParamInfo(b);
     if (lang === 'english') {
       this.i18n = i18nEng;
+      params.language = 'en';
+    }else{
+      params.language = 'te';
     }
     await b.respond(this.i18n.__('Welcome'))
     path(b).reset()
@@ -134,9 +136,8 @@ const paths = {
              paths.getBoyDateOfBirth(b);    
              break;
       case this.i18n.__('basicPanchang'):
-           await b.respond(self.i18n.__('getDateofBirth'));
-           path(b).reset() 
-           path(b).text(self.langPattern.ddmmyyyy, paths.getTime);
+             path(b).reset()
+             paths.getDate(b); 
            break;   
       default:
         // resp = statics;
@@ -158,6 +159,26 @@ const paths = {
       }
       b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
     });
+  },
+  getDate: async(b) => {
+      const self = this;
+      await b.respond(self.i18n.__('getDate'));
+      path(b).reset()
+      path(b).text(this.langPattern.exit, paths.exit)
+      path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
+      path(b).catchAll((b) => {
+        const message = b.message.message.toString();
+        const actulaMsg = message.split(' ')[1];
+        var reg = new RegExp(this.langPattern.ddmmyyyy);
+        var resp = reg.test(actulaMsg);
+        if (resp) {
+          const params = getUserParamInfo(b);
+          params.dateddmmyyyy = actulaMsg;
+          paths.getBasicPanchangDetail(b);
+          return
+        }
+        b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
+      });
   },
   getDateofBirth: async(b) => {
       const self = this;
@@ -182,7 +203,6 @@ const paths = {
   getName: async(b) => {
       await b.respond(`${this.i18n.__('getNameOfPersion')}`);
         path(b).reset();
-        //path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
         path(b).text(this.langPattern.exit, paths.exit);
         path(b).catchAll((b) => {
         const message = b.message.message.toString();
@@ -278,7 +298,6 @@ const paths = {
       });
   },
   panchangamOffers: async (b) => {
-     console.log("panchangamOffers function called");
     const self = this;
     const matched = b.match[0];
     collection['selectedoption'] = matched;
@@ -301,10 +320,9 @@ const paths = {
              paths.getBoyDateOfBirth(b);    
              break;
       case this.i18n.__('basicPanchang'):
-           await b.respond(self.i18n.__('getDateofBirth'));
-           path(b).reset() 
-           path(b).text(self.langPattern.ddmmyyyy, paths.getTime);
-           break;   
+             path(b).reset()
+             paths.getDate(b); 
+             break;  
       default:
         // resp = statics;
         break;
@@ -376,6 +394,21 @@ const paths = {
       `Sorry not an option now.`
     ));
   },
+  getBasicPanchangDetail: async (b) => {
+     const params = getUserParamInfo(b);
+     let date = params.dateddmmyyyy;
+     let tdate = date.split('.');
+     let language = params.language;
+     path(b).text(this.langPattern.exit, paths.exit);
+     path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
+     try {
+        panchgamAPI.basicPanchangCall('basic_panchang/sunrise', tdate[0], tdate[1], tdate[2], 17.387140, 78.491684, 5.5, language, function(err, result) {
+          b.respond(result);
+        });
+      } catch (error) {
+        console.log('erro', error);
+    }
+  },
   getMatchMakingDetail: async (b) =>{
      const params = getUserParamInfo(b);
      let bdate = params.boyddmmyyyy;
@@ -386,10 +419,11 @@ const paths = {
      let gdob = gdate.split('.');
      let bhhmm = btime.split(':');
      let ghhmm = gtime.split(':');
+     let language = params.language;
      path(b).text(this.langPattern.exit, paths.exit);
      path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
      try {
-        panchgamAPI.matchMakingCall('match_ashtakoot_points', bdob[0], bdob[1], bdob[2], bhhmm[0], bhhmm[1], 17.387140, 78.491684, 5.5,gdob[0], gdob[1], gdob[2], ghhmm[0], ghhmm[1], 17.387140, 78.491684, 5.5, function(err, result) {
+        panchgamAPI.matchMakingCall('match_ashtakoot_points', bdob[0], bdob[1], bdob[2], bhhmm[0], bhhmm[1], 17.387140, 78.491684, 5.5,gdob[0], gdob[1], gdob[2], ghhmm[0], ghhmm[1], 17.387140, 78.491684, 5.5, language, function(err, result) {
           b.respond(result);
         });
       } catch (error) {
@@ -402,11 +436,12 @@ const paths = {
       let pdate = params.numddmmyyyy;
       let pname = params.numpersionname;
       let dob = pdate.split('.');
+      let language = params.language;
       path(b).reset()
       path(b).text(this.langPattern.exit, paths.exit)
       path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
       try {
-        panchgamAPI.numeroCall('numero_table', dob[0], dob[1], dob[2], pname, function(err, result) {
+        panchgamAPI.numeroCall('numero_table', dob[0], dob[1], dob[2], pname,language, function(err, result) {
           b.respond(result);
         });
       } catch (error) {
@@ -420,10 +455,11 @@ const paths = {
     const time = params.ddmmyyyy;
     let dob = time.split('.');
     let hhmm = matched.split(':');
+    let language = params.language;
     path(b).text(this.langPattern.exit, paths.exit);
     path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
     try {
-      panchgamAPI.call(resource, dob[0], dob[1], dob[2], hhmm[0], hhmm[1], 17.387140, 78.491684, 5.5, function(err, result) {
+      panchgamAPI.call(resource, dob[0], dob[1], dob[2], hhmm[0], hhmm[1], 17.387140, 78.491684, 5.5, language, function(err, result) {
         b.respond(result);
       });
     } catch (error) {

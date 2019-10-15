@@ -45,6 +45,10 @@
         "tg": "మీ జన్మదినం ఈ విధం గ తెలపండి dd.mm.yyyy",
         "eng": "enter your date of birth as dd.mm.yyyy"
     },
+    "getDate": {
+        "tg": "తేదీని నమోదు చేయండి dd.mm.yyyy",
+        "eng": "Enter Date as dd.mm.yyyy"
+    },
     "getBoysDateOfBirth": {
          "tg": "అబ్బాయిల పుట్టిన తేదీని నమోదు చేయండి dd.mm.yyyy",
          "eng": "Enter Boy date of birth as dd.mm.yyyy"
