@@ -6,7 +6,7 @@ var apiKey = "3c881da11d427de42ca53c128ad30eae";
 //var baseUrl = "https://json.astrologyapi.com/v1/";
 
 
-var getResponse = (resource, data, callback) => {
+var getResponse = (resource, data, lang = 'en', callback) => {
 	var url = baseUrl + resource;
 	var auth = "Basic " + new Buffer(userID + ":" + apiKey).toString('base64');
 	request(
@@ -14,7 +14,7 @@ var getResponse = (resource, data, callback) => {
 			url: url,
 			headers: {
 				"Authorization": auth,
-				"Accept-Language": 'te'
+				"Accept-Language": lang
 			},
 			method: "POST",
 			form: data
@@ -121,19 +121,24 @@ var packageMatchMakingData = (maleBirthData, femaleBirthData) => {
 
 var api = {
 	
-	call: (resource, date, month, year, hour, minute, latitude, longitude, timezone, callback) => {
+	call: (resource, date, month, year, hour, minute, latitude, longitude, timezone, language, callback) => {
 		var data = packageHoroData(date, month, year, hour, minute, latitude, longitude, timezone);
-		return getResponse(resource, data, callback);
+		return getResponse(resource, data,language, callback);
 	},
 
-	numeroCall: (resource, date, month, year, name, callback)=> {
+	numeroCall: (resource, date, month, year, name,language, callback)=> {
 		var data = packageNumeroData(date, month, year, name);
-		return getResponse(resource, data, callback);
+		return getResponse(resource, data, language, callback);
 	},
 
-	matchMakingCall: (resource, m_day, m_month, m_year, m_hour, m_min, m_lat, m_lon, m_tzone, f_day, f_month, f_year, f_hour, f_min, f_lat, f_lon, f_tzone, callback)=> {
+	matchMakingCall: (resource, m_day, m_month, m_year, m_hour, m_min, m_lat, m_lon, m_tzone, f_day, f_month, f_year, f_hour, f_min, f_lat, f_lon, f_tzone, language, callback)=> {
 		var data = matchMakingData(m_day, m_month, m_year, m_hour, m_min, m_lat, m_lon, m_tzone, f_day, f_month, f_year, f_hour, f_min, f_lat, f_lon, f_tzone);
-		return getResponse(resource, data, callback);
+		return getResponse(resource, data, language, callback);
+	},
+
+	basicPanchangCall : (resource, date, month, year, latitude, longitude, timezone, language, callback) => {
+           var data = {'day': date, 'month': month, 'year': year, 'lat': latitude, 'lon': longitude, 'tzone': timezone };
+           return getResponse(resource, data, language, callback);
 	},
 
 	// matchMakingCall: (resource, maleBirthData, femaleBirthData, callback)=> {
