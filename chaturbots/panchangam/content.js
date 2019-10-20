@@ -157,8 +157,23 @@ const paths = {
         paths.getTime(b);
         return
       }
-      b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
+      paths.quitandtryagain(b);
     });
+  },
+  quitandtryagain: async (b) => {
+      b.envelope.payload.custom({ 
+       "channel": "#general", "attachments": [{
+        "actions": [
+        {
+          "type": "button",
+          "text": `${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`,
+          "msg": 'quit',
+          "msg_in_chat_window": true
+        }
+        ]
+      }]
+      })
+     await b.respond().catch((err) => console.error(err))
   },
   getDate: async(b) => {
       const self = this;
@@ -177,7 +192,7 @@ const paths = {
           paths.getBasicPanchangDetail(b);
           return
         }
-        b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
+        paths.quitandtryagain(b);
       });
   },
   getDateofBirth: async(b) => {
@@ -197,7 +212,7 @@ const paths = {
           paths.getName(b);
           return
         }
-        b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
+        paths.quitandtryagain(b);
       });
   },
   getName: async(b) => {
@@ -215,7 +230,7 @@ const paths = {
           paths.numeroData(b);
           return
         }
-        b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
+        paths.quitandtryagain(b);
     });
   },
   getBoyTimeOfBirth: async(b) => {
@@ -235,7 +250,7 @@ const paths = {
               paths.getGirlDateOfBirth(b);
               return
            }
-           b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
+           paths.quitandtryagain(b);
         });
   },
   getGirlTimeOfBirth: async(b) => {
@@ -254,7 +269,7 @@ const paths = {
               paths.getMatchMakingDetail(b);
               return
            }
-           b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
+          paths.quitandtryagain(b);
         });
   },
   getBoyDateOfBirth: async(b) => {
@@ -274,7 +289,7 @@ const paths = {
           paths.getBoyTimeOfBirth(b);
           return
         }
-        b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
+        paths.quitandtryagain(b);
       });
   },
   getGirlDateOfBirth: async(b) => {
@@ -294,7 +309,7 @@ const paths = {
           paths.getGirlTimeOfBirth(b);
           return
         }
-        b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
+        paths.quitandtryagain(b);
       });
   },
   panchangamOffers: async (b) => {
@@ -341,7 +356,7 @@ const paths = {
         paths.getTime(b);
         return
       }
-      b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
+      paths.quitandtryagain(b);
     });
   },
   dailyhoroscopeOpts: async (b) => {
@@ -366,7 +381,7 @@ const paths = {
     path(b).text(this.langPattern.dailyhoroscopeOptions, paths.getdailyHoroscope)
     path(b).text(this.langPattern.exit, paths.exit)
     path(b).catchAll((b) => {
-      b.respond(`${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`)
+      paths.quitandtryagain(b);
     })
   },
   getdailyHoroscope: async (b) => {
