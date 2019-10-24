@@ -4,11 +4,11 @@ const data = require('./data')
 //const { paths, patterns } = require('./content')
 
 
+scene.setup(bot);
 // bot.global.enter(paths.start)
 bot.global.text(/(panchangam|dailyhoroscope|horoscope|Numerology|Matchmaking|Basicpanchange)$/, function(b) {
     const message = b.message.toString();
     const splitMsg = message.split(' ');
-    scene.setup(bot);
     const { paths } = require('./content')(splitMsg[1]);
     data(b.message.user.id).setPanchnageOption(splitMsg[1])
     paths.langOption(b)
