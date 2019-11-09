@@ -257,7 +257,7 @@ const paths = {
         });
   },
   getName: async(b) => {
-      await b.respond(`${this.i18n.__('getNameOfPersion')}`);
+      	await b.respond(`${this.i18n.__('getNameOfPersion')}`);
         path(b).reset();
         path(b).text(this.langPattern.exit, paths.exit);
         path(b).catchAll((b) => {

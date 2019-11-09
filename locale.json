@@ -71,7 +71,7 @@
     },
     "getNameOfPersion": {
        "tg": "పెర్షన్ పేరును నమోదు చేయండి",
-       "eng":"Enter Name Of The Persion"
+       "eng":"Enter Name Of The Person"
     },
     "matchMakingReply": {
         "tg": "{{matched}} త్వరలో :slight_smile:.",
