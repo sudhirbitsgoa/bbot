@@ -65,7 +65,7 @@ bot.global.text(/calender$/, function(b) {
           {
               "type": "button",
               "text": 'Calendar (Telugu)',
-              "msg": 'బేసిక్ పంచంగ్',
+              "msg": 'బేసిక్ తెలుగు',
               "msg_in_chat_window": true
           }
       ]
@@ -73,7 +73,7 @@ bot.global.text(/calender$/, function(b) {
     }) 
     b.respond().catch((err) => console.error(err))
     path(b).reset()
-    path(b).text(/(Basicpanchange english|బేసిక్ పంచంగ్)$/i, function(b) {
+    path(b).text(/(Basicpanchange english|బేసిక్ తెలుగు)$/i, function(b) {
        const message = b.message.toString();
        const splitMsg = message.split(' ');
        const { paths } = require('./content')(splitMsg[1]);
