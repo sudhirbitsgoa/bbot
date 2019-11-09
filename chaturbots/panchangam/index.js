@@ -14,13 +14,13 @@ bot.global.text(/personal$/, function(b) {
       "actions": [
           {
               "type": "button",
-              "text": 'Daily Horoscope (English)',
+              "text": 'Daily Nakshatra (English)',
               "msg": 'dailyhoroscope english',
               "msg_in_chat_window": true
           },
           {
               "type": "button",
-              "text": 'Daily Horoscope (Telugu)',
+              "text": 'Daily Nakshatra (Telugu)',
               "msg": 'dailyhoroscope తెలుగు',
               "msg_in_chat_window": true
           },
