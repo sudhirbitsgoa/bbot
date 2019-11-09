@@ -18,7 +18,9 @@
         "ROCKETCHAT_PASSWORD":"password",
         "LISTEN_ON_ALL_PUBLIC":"true",
         "ROCKETCHAT_ROOM":"",
-        "RESPOND_TO_DM":"true",
+		"RESPOND_TO_DM":"true",
+		"BOT_STORAGE_ADAPTER": "mongo",
+		"BOT_MESSAGE_ADAPTER": "rocketchat"
       },
       "runtimeExecutable": "node",
       "program": "${workspaceFolder}/index.js",

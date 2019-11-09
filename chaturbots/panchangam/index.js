@@ -65,7 +65,7 @@ bot.global.text(/calender$/, function(b) {
           {
               "type": "button",
               "text": 'Calendar (Telugu)',
-              "msg": 'Basicpanchange తెలుగు',
+              "msg": 'బేసిక్ పంచంగ్',
               "msg_in_chat_window": true
           }
       ]
@@ -73,7 +73,7 @@ bot.global.text(/calender$/, function(b) {
     }) 
     b.respond().catch((err) => console.error(err))
     path(b).reset()
-    path(b).text(/(Basicpanchange english|Basicpanchange తెలుగు)$/i, function(b) {
+    path(b).text(/(Basicpanchange english|బేసిక్ పంచంగ్)$/i, function(b) {
        const message = b.message.toString();
        const splitMsg = message.split(' ');
        const { paths } = require('./content')(splitMsg[1]);
@@ -82,6 +82,10 @@ bot.global.text(/calender$/, function(b) {
        paths.start(b,splitMsg[2],patterns);
     });
 })
+
+bot.global.text(/quit$/, (b) => {
+	scene.exit(b);
+});
 
 // first ask user to select language
 // then list bots available in the language
