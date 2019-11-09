@@ -146,10 +146,11 @@ var api = {
 	// 	return getResponse(resource, data, callback);
 	// },
 
-	dailyHoroscopeCall: (resource,timezone,callback) => {
+	dailyHoroscopeCall: (resource,date, month, year, hour, minute, latitude, longitude, timezone,language, callback) => {
 		//var data = {'tzone': timezone};
-		//return getResponse(resource, data, callback);
-		return callDailyHoroscopeApi(resource, callback);
+		var data = packageHoroData(date, month, year, hour, minute, latitude, longitude, timezone);
+		return getResponse(resource, data, language, callback);
+		//return callDailyHoroscopeApi(resource, callback);
 	}
 
 }

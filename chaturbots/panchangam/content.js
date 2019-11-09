@@ -125,7 +125,8 @@ const paths = {
         break;
       case 'dailyhoroscope':
             path(b).reset()
-            paths.dailyhoroscopeOpts(b); 
+            paths.getDateofBirthForNakshtra(b)
+            //paths.dailyhoroscopeOpts(b); 
             break;
       case 'Numerology':
            path(b).reset()
@@ -214,6 +215,46 @@ const paths = {
         }
         paths.quitandtryagain(b);
       });
+  },
+  getDateofBirthForNakshtra: async(b) => {
+     const self = this;
+     await b.respond(self.i18n.__('getDateofBirth'));
+     path(b).reset()
+      path(b).text(this.langPattern.exit, paths.exit)
+      path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
+      path(b).catchAll((b) => {
+        const message = b.message.message.toString();
+        const actulaMsg = message.split(' ')[1];
+        var reg = new RegExp(this.langPattern.ddmmyyyy);
+        var resp = reg.test(actulaMsg);
+        if (resp) {
+          const params = getUserParamInfo(b);
+          params.nakddmmyyyy = actulaMsg;
+          paths.getTimeOfBirthForNakshtra(b);
+          return
+        }
+        paths.quitandtryagain(b);
+      });
+  },
+  getTimeOfBirthForNakshtra: async(b) => {
+     await b.respond(
+      `${this.i18n.__('getTimeofBirth')}`);
+        path(b).reset();
+        path(b).text(this.langPattern.exit, paths.exit);
+        path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
+        path(b).catchAll((b) => {
+           const message = b.message.message.toString();
+           const actulaMsg = message.split(' ')[1];
+           var reg = new RegExp(this.langPattern.hhmm);
+           var resp = reg.test(actulaMsg);
+           if(resp){
+              const params = getUserParamInfo(b);
+              params.nakhhmm = actulaMsg;
+              paths.getdailyHoroscope(b);
+              return
+           }
+           paths.quitandtryagain(b);
+        });
   },
   getName: async(b) => {
       await b.respond(`${this.i18n.__('getNameOfPersion')}`);
@@ -387,12 +428,15 @@ const paths = {
   getdailyHoroscope: async (b) => {
       const self = this;
       const matched = b.match[0];
-      const resource = matched +'/today/';
+      const resource = 'daily_nakshatra_prediction';
+      const params = getUserParamInfo(b);
+      let language = params.language;
+      let ndate = params.nakddmmyyyy.split('.');
+      let nhhmm = params.nakhhmm.split(':');
       path(b).text(this.langPattern.exit, paths.exit);
       path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
-      //path(b).text(this.langPattern.dailyhoroscopeOptions, paths.getdailyHoroscope)
       try {
-      panchgamAPI.dailyHoroscopeCall(resource, 5.5, function(err, result) {
+      panchgamAPI.dailyHoroscopeCall(resource, ndate[0], ndate[1], ndate[2], nhhmm[0], nhhmm[1], 17.387140, 78.491684, 5.5, language, function(err, result) {
           b.respond(result);
       });
       } catch (error) {
