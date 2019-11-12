@@ -38,7 +38,7 @@ const patterns = {
     hhmm: /([01]?[0-9]|2[0-3]):[0-5][0-9]$/i,
     skip: /దాటు$/i,
      start: /(ప్రారంభం|కొత్త|ముగింపు)$/i,
-    exit: /(విడువు|నిష్క్రమించు|రద్దుచేయు)$/i,
+    exit: /(విడిచి|విడువు|నిష్క్రమించు|రద్దుచేయు)$/i,
   },
   english: {
     start: /\b(hi astro|hello astro|hey astro)\b$/i,
@@ -168,7 +168,7 @@ const paths = {
         {
           "type": "button",
           "text": `${this.i18n.__('sorryIdontknowoption')}. ${this.i18n.__('quitortryagain')}`,
-          "msg": 'quit',
+          "msg": `${this.i18n.__('quit')}`,
           "msg_in_chat_window": true
         }
         ]
@@ -437,7 +437,16 @@ const paths = {
       path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
       try {
       panchgamAPI.dailyHoroscopeCall(resource, ndate[0], ndate[1], ndate[2], nhhmm[0], nhhmm[1], 17.387140, 78.491684, 5.5, language, function(err, result) {
-          b.respond(result);
+          b.envelope.write(result)
+          b.respond({
+             "color": "#cac4c4",
+              "actions": [{
+                  "type": "button",
+                  "text": "Quit Right ?",
+                  "msg": "quit",
+                  "msg_in_chat_window": true
+              }]
+          })
       });
       } catch (error) {
         console.log('erro', error);
@@ -462,7 +471,16 @@ const paths = {
      path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
      try {
         panchgamAPI.basicPanchangCall('basic_panchang/sunrise', tdate[0], tdate[1], tdate[2], 17.387140, 78.491684, 5.5, language, function(err, result) {
-          b.respond(result);
+          b.envelope.write(result)
+          b.respond({
+             "color": "#cac4c4",
+              "actions": [{
+                  "type": "button",
+                  "text": "Quit Right ?",
+                  "msg": "quit",
+                  "msg_in_chat_window": true
+              }]
+          })
         });
       } catch (error) {
         console.log('erro', error);
@@ -483,14 +501,22 @@ const paths = {
      path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
      try {
         panchgamAPI.matchMakingCall('match_ashtakoot_points', bdob[0], bdob[1], bdob[2], bhhmm[0], bhhmm[1], 17.387140, 78.491684, 5.5,gdob[0], gdob[1], gdob[2], ghhmm[0], ghhmm[1], 17.387140, 78.491684, 5.5, language, function(err, result) {
-          b.respond(result);
+          b.envelope.write(result)
+          b.respond({
+             "color": "#cac4c4",
+              "actions": [{
+                  "type": "button",
+                  "text": "Quit Right ?",
+                  "msg": "quit",
+                  "msg_in_chat_window": true
+              }]
+          })
         });
       } catch (error) {
         console.log('erro', error);
     }
   },
   numeroData: async (b) => {
-      console.log("numeroData function called");
       const params = getUserParamInfo(b);
       let pdate = params.numddmmyyyy;
       let pname = params.numpersionname;
@@ -501,7 +527,17 @@ const paths = {
       path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
       try {
         panchgamAPI.numeroCall('numero_table', dob[0], dob[1], dob[2], pname,language, function(err, result) {
-          b.respond(result);
+          //b.respond(result);
+          b.envelope.write(result)
+          b.respond({
+             "color": "#cac4c4",
+              "actions": [{
+                  "type": "button",
+                  "text": "Quit Right ?",
+                  "msg": "quit",
+                  "msg_in_chat_window": true
+              }]
+          })
         });
       } catch (error) {
         console.log('erro', error);
