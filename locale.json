@@ -37,6 +37,10 @@
 		"tg": "మల్లి ప్రయత్నించు లేద విడువు",
 		"eng": "quit or try again"
     },
+    "quit": {
+         "tg": "విడిచి",
+         "eng": "quit"
+    },
     "panchangamOffersEntry": {
         "tg": "మీ {{matched}} కోసం :slight_smile:.",
         "eng": "for {{matched}} :slight_smile:"

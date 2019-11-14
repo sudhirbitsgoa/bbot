@@ -65,7 +65,16 @@ const paths = {
     path(b).text(this.langPattern.exit, paths.exit);
     try {
       railAPI.call(pnrnumber, function(err, result) {
-        b.respond(result);
+        b.envelope.write(result)
+        b.respond({
+             "color": "#cac4c4",
+              "actions": [{
+                  "type": "button",
+                  "text": "Quit Right ?",
+                  "msg": "quit",
+                  "msg_in_chat_window": true
+              }]
+          })
       });
     } catch (error) {
       console.log('erro', error);
