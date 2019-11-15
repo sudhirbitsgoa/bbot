@@ -442,7 +442,7 @@ const paths = {
              "color": "#cac4c4",
               "actions": [{
                   "type": "button",
-                  "text": "Quit Right ?",
+                  "text": `${self.i18n.__('quitRight')}`,
                   "msg": "quit",
                   "msg_in_chat_window": true
               }]
@@ -463,6 +463,7 @@ const paths = {
     ));
   },
   getBasicPanchangDetail: async (b) => {
+     const self = this;
      const params = getUserParamInfo(b);
      let date = params.dateddmmyyyy;
      let tdate = date.split('.');
@@ -476,7 +477,7 @@ const paths = {
              "color": "#cac4c4",
               "actions": [{
                   "type": "button",
-                  "text": "Quit Right ?",
+                  "text": `${self.i18n.__('quitRight')}`,
                   "msg": "quit",
                   "msg_in_chat_window": true
               }]
@@ -487,6 +488,7 @@ const paths = {
     }
   },
   getMatchMakingDetail: async (b) =>{
+     const self = this;
      const params = getUserParamInfo(b);
      let bdate = params.boyddmmyyyy;
      let gdate = params.girlddmmyyyy;
@@ -506,7 +508,7 @@ const paths = {
              "color": "#cac4c4",
               "actions": [{
                   "type": "button",
-                  "text": "Quit Right ?",
+                  "text": `${self.i18n.__('quitRight')}`,
                   "msg": "quit",
                   "msg_in_chat_window": true
               }]
@@ -517,6 +519,7 @@ const paths = {
     }
   },
   numeroData: async (b) => {
+     const self = this;
       const params = getUserParamInfo(b);
       let pdate = params.numddmmyyyy;
       let pname = params.numpersionname;
@@ -533,7 +536,7 @@ const paths = {
              "color": "#cac4c4",
               "actions": [{
                   "type": "button",
-                  "text": "Quit Right ?",
+                  "text": `${self.i18n.__('quitRight')}`,
                   "msg": "quit",
                   "msg_in_chat_window": true
               }]
