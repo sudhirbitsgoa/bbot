@@ -1,4 +1,5 @@
 const scene = require('./scene')
+const railAPI = require('./sdk');
 const credentials = require('./credentials')
 const admin = require('./admin')
 const bot = require('bbot')
@@ -18,6 +19,8 @@ const patterns = {
   confirm: /confirm$/i,
   start: /(start|new|begin)$/i,
   exit: /\b(quit|exit|cancel)\b$/i,
+  pnr:/\b(PNR)\b$/i,
+  checkpnr:/(?<!\d)((\d{10})|(\d{4}-\d{4})|(\d.\d{3}-\d.\d{3}))(?!\d)(\s+([AaDdPp])([1-9][0-9]*))?/g,
 }
 
 /**
@@ -48,6 +51,38 @@ const paths = {
       `Sorry, that doesn't look like a valid email address.`,
       `Please try again, or reply \`quit\` if you want to try later.`
     ))
+  },
+  callpnr: async (b) => {
+    await b.respond(
+      `Check the status of your train ticket with PNR ?`
+    )
+    path(b).reset()
+    path(b).text(patterns.checkpnr, paths.getPnrStatus)
+    path(b).text(patterns.exit, paths.exit)
+    path(b).catchAll((b) => b.respond(
+      `Sorry, that doesn't look like a valid pnr number.`
+    ))
+  },
+  getPnrStatus: async (b) => {
+    const pnrnumber = b.match[0];
+    console.log("pnr value is",pnrnumber);
+    path(b).text(patterns.exit, paths.exit);
+    try {
+      railAPI.call(pnrnumber, function(err, result) {
+        b.envelope.write(result)
+        b.respond({
+             "color": "#cac4c4",
+              "actions": [{
+                  "type": "button",
+                  "text": "Quit Right ?",
+                  "msg": "quit",
+                  "msg_in_chat_window": true
+              }]
+          })
+      });
+    } catch (error) {
+      console.log('erro', error);
+    }
   },
   statsOption: async (b) => {
     b.envelope.payload.custom({ 

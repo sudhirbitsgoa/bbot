@@ -51,38 +51,6 @@ bot.global.text(/personal$/, function(b) {
     });
 })
 
-bot.global.text(/calender$/, function(b) {
-   b.envelope.payload.custom({ 
-     "channel": "#general", "attachments": [{
-      "button_alignment": "horizontal",
-      "actions": [
-          {
-              "type": "button",
-              "text": 'Calendar (English)',
-              "msg": 'Basicpanchange english',
-              "msg_in_chat_window": true
-          },
-          {
-              "type": "button",
-              "text": 'Calendar (Telugu)',
-              "msg": 'బేసిక్ తెలుగు',
-              "msg_in_chat_window": true
-          }
-      ]
-      }]
-    }) 
-    b.respond().catch((err) => console.error(err))
-    path(b).reset()
-    path(b).text(/(Basicpanchange english|బేసిక్ తెలుగు)$/i, function(b) {
-       const message = b.message.toString();
-       const splitMsg = message.split(' ');
-       const { paths } = require('./content')(splitMsg[1]);
-       const { patterns } = require('./content')(splitMsg[2]);
-       data(b.message.user.id).setPanchnageOption(splitMsg[1])
-       paths.start(b,splitMsg[2],patterns);
-    });
-})
-
 bot.global.text(/quit$/, (b) => {
 	scene.exit(b);
 });
