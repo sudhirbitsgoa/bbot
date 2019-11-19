@@ -67,36 +67,6 @@ const zodiacnames = ["aries", "taurus", "gemini","cancer","leo","virgo","libra",
  *       server reset - changing branches on welcome for known user.
  */
 const paths = {
-  langOption: async (b) => {
-    b.envelope.write('Hindu calendar information (English or Telugu)')
-    b.envelope.payload.custom({ 
-     "channel": "#general", "attachments": [{
-      "button_alignment": "horizontal",
-      "actions": [
-      {
-        "type": "button",
-        "text": 'english',
-        "msg": 'english',
-        "msg_in_chat_window": true
-      },
-      {
-        "type": "button",
-        "text": 'తెలుగు',
-        "msg": 'తెలుగు',
-        "msg_in_chat_window": true
-      }
-      ]
-    }]
-    })
-    await b.respond().catch((err) => console.error(err))
-    path(b).reset()
-    path(b).text(/(తెలుగు|english)$/i, function(b) {
-      const message = b.message.toString();
-      const splitMsg = message.split(' ');
-      const { patterns } = require('./content')(splitMsg[1]);
-         paths.start(b, splitMsg[1], patterns);
-    });
-  },
   start: async (b, lang, pattern) => {
     this.lang = lang;
     this.langPattern = pattern;
@@ -126,7 +96,6 @@ const paths = {
       case 'dailyhoroscope':
             path(b).reset()
             paths.getDateofBirthForNakshtra(b)
-            //paths.dailyhoroscopeOpts(b); 
             break;
       case 'Numerology':
            path(b).reset()
@@ -135,11 +104,7 @@ const paths = {
       case this.i18n.__('matchMaking'):
              path(b).reset()
              paths.getBoyDateOfBirth(b);    
-             break;
-      case this.i18n.__('basicPanchang'):
-             path(b).reset()
-             paths.getDate(b); 
-           break;   
+             break;   
       default:
         // resp = statics;
         break;
@@ -175,26 +140,6 @@ const paths = {
       }]
       })
      await b.respond().catch((err) => console.error(err))
-  },
-  getDate: async(b) => {
-      const self = this;
-      await b.respond(self.i18n.__('getDate'));
-      path(b).reset()
-      path(b).text(this.langPattern.exit, paths.exit)
-      path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
-      path(b).catchAll((b) => {
-        const message = b.message.message.toString();
-        const actulaMsg = message.split(' ')[1];
-        var reg = new RegExp(this.langPattern.ddmmyyyy);
-        var resp = reg.test(actulaMsg);
-        if (resp) {
-          const params = getUserParamInfo(b);
-          params.dateddmmyyyy = actulaMsg;
-          paths.getBasicPanchangDetail(b);
-          return
-        }
-        paths.quitandtryagain(b);
-      });
   },
   getDateofBirth: async(b) => {
       const self = this;
@@ -374,11 +319,7 @@ const paths = {
       case this.i18n.__('matchMaking'):
              path(b).reset()
              paths.getBoyDateOfBirth(b);    
-             break;
-      case this.i18n.__('basicPanchang'):
-             path(b).reset()
-             paths.getDate(b); 
-             break;  
+             break; 
       default:
         // resp = statics;
         break;
@@ -461,31 +402,6 @@ const paths = {
     path(b).catchAll((b) => b.respond(
       `Sorry not an option now.`
     ));
-  },
-  getBasicPanchangDetail: async (b) => {
-     const self = this;
-     const params = getUserParamInfo(b);
-     let date = params.dateddmmyyyy;
-     let tdate = date.split('.');
-     let language = params.language;
-     path(b).text(this.langPattern.exit, paths.exit);
-     path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
-     try {
-        panchgamAPI.basicPanchangCall('basic_panchang/sunrise', tdate[0], tdate[1], tdate[2], 17.387140, 78.491684, 5.5, language, function(err, result) {
-          b.envelope.write(result)
-          b.respond({
-             "color": "#cac4c4",
-              "actions": [{
-                  "type": "button",
-                  "text": `${self.i18n.__('quitRight')}`,
-                  "msg": "quit",
-                  "msg_in_chat_window": true
-              }]
-          })
-        });
-      } catch (error) {
-        console.log('erro', error);
-    }
   },
   getMatchMakingDetail: async (b) =>{
      const self = this;
