@@ -42,8 +42,8 @@
          "eng": "quit"
     },
     "quitRight": {
-         "tg": "కుడి నుండి నిష్క్రమించాలా?",
-         "eng": "Quit Right ?"
+         "tg": "నిష్క్రమించు?",
+         "eng": "Quit ?"
     },
     "panchangamOffersEntry": {
         "tg": "మీ {{matched}} కోసం :slight_smile:.",
