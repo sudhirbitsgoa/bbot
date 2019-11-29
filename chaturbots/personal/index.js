@@ -7,7 +7,7 @@ const data = require('./data')
 scene.setup(bot);
 const path = (b) => scene.path(b.message.user.id)
 // bot.global.enter(paths.start)
-bot.global.text(/personal$/, function(b) {
+bot.global.text(/(hi|hey|hello)$/, function(b) {
    b.envelope.payload.custom({ 
      "channel": "#general", "attachments": [{
       "button_alignment": "horizontal",
