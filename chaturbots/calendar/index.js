@@ -9,7 +9,7 @@ const path = (b) => scene.path(b.message.user.id)
 
 bot.global.text(/calender$/, function(b) {
    b.envelope.payload.custom({ 
-     "channel": "#general", "attachments": [{
+     "attachments": [{
       "button_alignment": "horizontal",
       "actions": [
           {
