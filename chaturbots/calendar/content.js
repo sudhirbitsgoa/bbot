@@ -187,31 +187,35 @@ const paths = {
       `Sorry not an option now.`
     ));
   },
-  getBasicPanchangDetail: async (b) => {
-     const self = this;
-     const params = getUserParamInfo(b);
-     let date = params.dateddmmyyyy;
-     let tdate = date.split('.');
-     let language = params.language;
-     path(b).text(this.langPattern.exit, paths.exit);
-     path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
-     try {
-        panchgamAPI.basicPanchangCall('basic_panchang/sunrise', tdate[0], tdate[1], tdate[2], 17.387140, 78.491684, 5.5, language, function(err, result) {
-          b.envelope.write(result)
-          b.respond({
-             "color": "#cac4c4",
-              "actions": [{
-                  "type": "button",
-                  "text": `${self.i18n.__('quitRight')}`,
-                  "msg": "quit",
-                  "msg_in_chat_window": true
-              }]
-          })
-        });
-      } catch (error) {
-        console.log('erro', error);
-    }
-  },
+	getBasicPanchangDetail: async (b) => {
+		const self = this;
+		const params = getUserParamInfo(b);
+		let date = params.dateddmmyyyy;
+		let tdate = date.split('.');
+		let language = params.language;
+		path(b).text(this.langPattern.exit, paths.exit);
+		path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
+		try {
+			panchgamAPI.basicPanchangCall('basic_panchang/sunrise', tdate[0], tdate[1], tdate[2], 17.387140, 78.491684, 5.5, language, function (err, result) {
+				b.envelope.write(result);
+				let msg = 'quit';
+				if (self.i18n._lang === 'tg') {
+					msg = 'నిష్క్రమించు';
+				}
+				b.respond({
+					"color": "#cac4c4",
+					"actions": [{
+						"type": "button",
+						"text": `${self.i18n.__('quitRight')}`,
+						"msg": `${msg}`,
+						"msg_in_chat_window": true
+					}]
+				});
+			});
+		} catch (error) {
+			console.log('erro', error);
+		}
+	},
   finish: async (b) => {
     await b.respond(`Amazing, I'll just get that ...`)
     collection[b.message.user.id] = null;

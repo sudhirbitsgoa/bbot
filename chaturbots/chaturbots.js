@@ -1,6 +1,6 @@
 const bot = require('bbot')
 // require('./utilities');
-require('./personal');
+require('./calendar');
 // require('./calendar');
 // bot.global.text(/hi|hello|hey/i, function(b) {
 //   b.envelope.write('Welcome to chatur - your intelligent assistant.I can help you in some ways.')
