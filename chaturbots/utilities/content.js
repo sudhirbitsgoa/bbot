@@ -11,7 +11,7 @@ const path = (b) => scene.path(b.message.user.id)
 const patterns = {
   stats: /\b(hi|hey|hello)\b$/i,
   email: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
-  frameworks: /\b(totalUsers|onlineUsers|offlineUsers|totalChannelMessages|totalPrivateGroupMessages|none)\b$/i,
+  frameworks: /\b(totalUsers|onlineUsers|offlineUsers|totalChannelMessages|totalPrivateGroupMessages|quit)\b$/i,
   username: /(\w*)$/i,
   password: /(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
   set: /set$/i,
@@ -122,14 +122,14 @@ const paths = {
       },
       {
         "type": "button",
-        "text": 'none',
-        "msg": 'none',
+        "text": 'quit',
+        "msg": 'quit',
         "msg_in_chat_window": true
       }
       ]
       }]
   }) 
-  await b.respond().catch((err) => console.error(err))
+    await b.respond().catch((err) => console.error(err))
     // await b.respond(
     //   "Do you need `totalUsers`, `onlineUsers`, `offlineUsers`, `totalChannelMessages`, `totalPrivateGroupMessages`, or `none`?"
     // )
@@ -141,14 +141,16 @@ const paths = {
         `Sorry, I don't know how to get stats for ${b.match}.`,
         `Please try again, or reply \`quit\` if you want to try later.`)
     })
-
   },
   framework: async (b) => {
     // const framework = b.match[0]
     const framework = 'bbot'
     b.bot.logger.info(`[faldo] storing framework information  ${framework}`)
     // credentials(b.message.user.id).setFramework(framework)
-    const matched = b.match[0]
+    const matched = b.match[0];
+    if (matched === 'quit') {
+      return paths.exit(b);
+    }
     if (matched != 'bbot') {
       await b.respond(
         `Alright, it seems you want ${matched} :slight_smile:.`)
@@ -170,12 +172,21 @@ const paths = {
         break;
       case 'totalPrivateGroupMessages':
         resp = statics.totalPrivateGroupMessages;      
-        break;
+	    	break;
       default:
         resp = statics;
         break;
     }
     await b.respond(JSON.stringify(resp));
+    await b.respond({
+      "color": "#cac4c4",
+      "actions": [{
+        "type": "button",
+        "text": `quit?`,
+        "msg": `quit`,
+        "msg_in_chat_window": true
+      }]
+    });
     path(b).reset()
     path(b).text(patterns.set, paths.set)
     path(b).text(patterns.frameworks, paths.framework)

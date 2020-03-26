@@ -29,6 +29,29 @@ function getResourceInfo(b) {
 	}
 }
 
+function formatResponse(result) {
+	let response = result;
+	let respTxt = '';
+	try {
+		response = JSON.parse(result);
+	} catch (error) {
+		console.log(error);
+	}
+	// b.envelope.write(response);
+	for (const key in response) {
+		if (response.hasOwnProperty(key)) {
+			const element = response[key];
+			if (typeof element === 'string') {
+				respTxt += `${key}: `;
+				respTxt += `${element} \n \n`;
+			} else {
+				respTxt += formatResponse(element);
+			}
+		}
+	}
+	return respTxt;
+}
+
 // Keep langPattern separated for cleaner conversation logic
 const patterns = {
 	'తెలుగు': {
@@ -441,7 +464,8 @@ const paths = {
 				if (self.i18n._lang === 'tg') {
 					msg = 'నిష్క్రమించు';
 				}
-				b.envelope.write(result)
+				
+				b.envelope.write(formatResponse(result));
 				b.respond({
 					"color": "#cac4c4",
 					"actions": [{
@@ -480,7 +504,7 @@ const paths = {
 				if (self.i18n._lang === 'tg') {
 					msg = 'నిష్క్రమించు';
 				}
-				b.envelope.write(result)
+				b.envelope.write(formatResponse(result));
 				b.respond({
 					"color": "#cac4c4",
 					"actions": [{
@@ -511,7 +535,7 @@ const paths = {
 		path(b).text(this.langPattern.panchangamOptions, paths.panchangamOffers)
 		try {
 			panchgamAPI.matchMakingCall('match_ashtakoot_points', bdob[0], bdob[1], bdob[2], bhhmm[0], bhhmm[1], 17.387140, 78.491684, 5.5, gdob[0], gdob[1], gdob[2], ghhmm[0], ghhmm[1], 17.387140, 78.491684, 5.5, language, function (err, result) {
-				b.envelope.write(result)
+				b.envelope.write(formatResponse(result));
 				let msg = 'quit';
 				if (self.i18n._lang === 'tg') {
 					msg = 'నిష్క్రమించు';
@@ -547,7 +571,7 @@ const paths = {
 				if (self.i18n._lang === 'tg') {
 					msg = 'నిష్క్రమించు';
 				}
-				b.envelope.write(result)
+				b.envelope.write(formatResponse(result));
 				b.respond({
 					"color": "#cac4c4",
 					"actions": [{
