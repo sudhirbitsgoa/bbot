@@ -42,7 +42,16 @@ function formatResponse(result) {
 		if (response.hasOwnProperty(key)) {
 			const element = response[key];
 			if (typeof element === 'string') {
-				respTxt += `${key}: `;
+				let splitKeys = key.split('_');
+				let parsedKey = '';
+				for (let i = 0; i < splitKeys.length; i++) {
+					let e = splitKeys[i];
+					if (i === 0) {
+						e = e[0].toUpperCase() + e.slice(1);
+					}
+					parsedKey+=`${e} `;
+				}
+				respTxt += `${parsedKey}: `;
 				respTxt += `${element} \n \n`;
 			} else {
 				respTxt += formatResponse(element);
