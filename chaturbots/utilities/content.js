@@ -85,7 +85,7 @@ const paths = {
     }
   },
   statsOption: async (b) => {
-    b.envelope.payload.custom({ 
+    b.envelope.payload.custom({
      "channel": "#general", "attachments": [{
      // "title": "Choose Options",
       "button_alignment": "horizontal",

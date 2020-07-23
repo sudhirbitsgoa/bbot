@@ -14,7 +14,7 @@
         "BOT_LOG_LEVEL": "info",
         "ROCKETCHAT_URL":"http://0.0.0.0:3000",
         "ROCKETCHAT_AUTH":"password",
-        "ROCKETCHAT_USER":"bbot",
+        "ROCKETCHAT_USER":"sudoku",
         "ROCKETCHAT_PASSWORD":"password",
         "LISTEN_ON_ALL_PUBLIC":"true",
         "ROCKETCHAT_ROOM":"",
