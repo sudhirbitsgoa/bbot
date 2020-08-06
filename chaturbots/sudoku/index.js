@@ -4,6 +4,7 @@ const scene = require('./scene')
 const Axios = require('axios')
 const download = require('./download');
 const uploadFile = require('./uploadFile');
+const login = require('./login');
 
 scene.setup(bot);
 const path = (b) => scene.path(b.message.user.id)
@@ -39,17 +40,14 @@ bot.global.text(/(hi|hey|hello)$/i, async function (b) {
 		try {
 			const image = b.message.payload.attachments[0].image_url;
 			const image_url = `${process.env.ROCKETCHAT_URL}${image}`;
-			const token = await bot.adapters.message.driver.login({
-				username: process.env.ROCKETCHAT_USER,
-				password: process.env.ROCKETCHAT_PASSWORD
-			});
-			const userId = b.user.id;
-			console.log('the file %j', token);
+			const {authToken, userId} = await login();
+			// const userId = b.user.id;
+			console.log('the file %j', authToken);
 			try {
 				const dir = Date.now().toString();
-				await download(image_url, userId, dir);
-				await triggerSolver(image);
-				await uploadFile(userId, b.user.room.id, dir);
+				await download(image_url, userId, dir, authToken);
+				await triggerSolver(dir);
+				await uploadFile(userId, b.user.room.id, dir, authToken);
 			} catch (error) {
 				console.log('the image url', error);				
 			}
@@ -63,7 +61,7 @@ bot.global.text(/(hi|hey|hello)$/i, async function (b) {
 async function triggerSolver(file) {
 	const res = await Axios({
 		method: 'GET',
-		url: `http://localhost:5000/solve?inputfile=${file}`
+		url: `http://localhost:5000/solve?inputfile=${file}/input.jpg`
 	});
 	return res;
 }

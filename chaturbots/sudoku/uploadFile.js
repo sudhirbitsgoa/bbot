@@ -4,18 +4,19 @@ const FormData = require('form-data');
 const Path = require('path');
 const fs = require('fs');
 
-async function uploadFile(userId, roomId, dir, filename) {
+async function uploadFile(userId, roomId, dir, token) {
 	const formData = new FormData();
-	const path = Path.resolve('/', 'usr', 'share', 'sudoku-solver', 'images', dir, 'solved_input.jpg');
+	const path = Path.resolve('/', 'home', 'sudhir', 'ChaturAI', 'sudoku-solver','images', dir, 'solved_input.jpg');
+	// const path = Path.resolve('/', 'usr', 'share', 'sudoku-solver', 'images', dir, 'solved_input.jpg');
 	formData.append('file', fs.createReadStream(path), 'solved_input.jpg');
 	const request_config = {
 		headers: {
 			...formData.getHeaders(),
 			'x-user-id': userId,
-			'x-auth-token': 'D3fmXEvrUa5Y_ioeTVrhozJfmYYfDOsIk05HxzOAfR9'
+			'x-auth-token': token
 		},
 		method: 'POST',
-		url: `http://localhost:3000/api/v1/rooms.upload/${roomId}`,
+		url: `${process.env.ROCKETCHAT_URL}/api/v1/rooms.upload/${roomId}`,
 		data: formData
 	};
 	try {
