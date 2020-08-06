@@ -6,8 +6,8 @@ const fs = require('fs');
 
 async function uploadFile(userId, roomId, dir, token) {
 	const formData = new FormData();
-	const path = Path.resolve('/', 'home', 'sudhir', 'ChaturAI', 'sudoku-solver','images', dir, 'solved_input.jpg');
-	// const path = Path.resolve('/', 'usr', 'share', 'sudoku-solver', 'images', dir, 'solved_input.jpg');
+	// const path = Path.resolve('/', 'home', 'sudhir', 'ChaturAI', 'sudoku-solver','images', dir, 'solved_input.jpg');
+	const path = Path.resolve('/', 'usr', 'share', 'sudoku-solver', 'images', dir, 'solved_input.jpg');
 	formData.append('file', fs.createReadStream(path), 'solved_input.jpg');
 	const request_config = {
 		headers: {
