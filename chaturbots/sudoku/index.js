@@ -46,7 +46,15 @@ bot.global.text(/(hi|hey|hello)$/i, async function (b) {
 			try {
 				const dir = Date.now().toString();
 				await download(image_url, userId, dir, authToken);
-				await triggerSolver(dir);
+				let resp;
+				try {
+					resp = await triggerSolver(dir);
+					if (resp.data.error) {
+						return b.reply(resp.data.error);
+					}
+				} catch (error) {
+					debugger;
+				}
 				await uploadFile(userId, b.user.room.id, dir, authToken);
 			} catch (error) {
 				console.log('the image url', error);				
