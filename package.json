@@ -17,7 +17,7 @@
     "flag": "🇦🇺"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bbot": "^1.3.2",
     "email-addresses": "^3.0.3",
     "form-data": "^3.0.0",
